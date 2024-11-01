@@ -1,0 +1,25 @@
+<h1>orgado</h1>
+<a routerLink="/calendar"><button class="calendar-btn">Zum Kalender</button></a>
+<button (click)="openAdd()" class="add-btn" style="height: 80px" mat-raised-button color="primary">
+    Aufgabe erstellen
+</button>
+<!-- @if(showCreateTodo() === false){
+<button class="add-todo-btn" (click)="showCreateTodo.set(true)">+</button>
+} @else {
+<button class="add-todo-btn" (click)="fadeToBottom()">-</button>
+} -->
+<!-- <app-card [content]="'hayayayayaa'"></app-card> -->
+
+@if(showCreateTodo() || overlayFadeOut()){
+<div class="main-container">
+    <app-overlay [class.done]="overlayFadeOut()">
+        <app-create-todo (created)="fadeToBottom()"></app-create-todo>
+    </app-overlay>
+</div>
+} @else{
+<div class="main-container todos from-bottom">
+    @for (todo of todos$ | async; track $index) {
+    <app-card [title]="todo.title" [content]="todo.description"></app-card>
+    }
+</div>
+}

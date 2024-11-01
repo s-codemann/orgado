@@ -1,0 +1,50 @@
+h1 {
+    color: #fff;
+    font-size: 2rem;
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    padding: 2.5rem 1rem 0;
+}
+
+.add-btn {
+    min-height: 60px;
+    border-radius: 30px;
+}
+
+.add-todo-btn {
+    border-radius: 50%;
+    font-size: 2rem;
+    aspect-ratio: 1;
+    margin-bottom: 2rem;
+}
+
+.main-container {
+    position: relative;
+    align-items: center;
+    width: 100%;
+    padding: 2rem 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    // height: 70%;
+    overflow: auto;
+    gap: 1rem;
+
+    app-card {
+        width: 100%;
+        margin: auto;
+    }
+}
+
+.calendar-btn {
+    position: absolute;
+    right: 25px;
+    top: 50px;
+}

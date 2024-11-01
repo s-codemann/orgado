@@ -1,0 +1,24 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="createTodoForm">
+    <mat-form-field appearance="outline">
+        <mat-label>Titel</mat-label>
+        <input matInput formControlName="title" type="text" name="title" id="title" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Beschreibung</mat-label>
+        <textarea matInput formControlName="description" type="text" name="desc" id="description"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Fällig</mat-label>
+        <input formControlName="due_date" matInput [matDatepicker]="dueDateDp" />
+        <mat-datepicker #dueDateDp></mat-datepicker>
+        <mat-datepicker-toggle matIconSuffix [for]="dueDateDp"></mat-datepicker-toggle>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Uhrzeit</mat-label>
+        <input matInput formControlName="due_time" />
+    </mat-form-field>
+
+    <button mat-stroked-button color="primary" [disabled]="!createTodoForm.valid">
+        Todo erstellen
+    </button>
+</form>

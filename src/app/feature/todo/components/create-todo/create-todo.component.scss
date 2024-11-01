@@ -1,0 +1,49 @@
+:host {
+    // background-color: var(--primary-900);
+    background-color: red;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    align-items: center;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    input {
+        background-color: var(--primary-900);
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #fff;
+        color: #fff;
+    }
+}
+
+input,
+textarea {
+    font-size: 1.2rem;
+    font-family: Helvetiva;
+}
+
+textarea {
+    padding: 1rem 0.5rem;
+}
+
+// button {
+//     padding: 1.5rem;
+//     background-color: var(--success-500);
+//     color: #fff;
+//     font-size: 1.3rem;
+//     border-radius: 12px;
+// }

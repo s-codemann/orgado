@@ -1,0 +1,16 @@
+:host {
+    --border-radius: 12px;
+    position: absolute;
+    inset: 0;
+    background-color: var(--primary-900);
+    border: 3px solid var(--neutral-500);
+    z-index: 10000;
+    animation: from-bottom 800ms forwards;
+    color: #fff;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+
+    &.done {
+        animation: to-bottom 400ms forwards;
+    }
+}
