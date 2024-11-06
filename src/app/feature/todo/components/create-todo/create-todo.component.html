@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="createTodoForm">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" spellcheck="false">
         <mat-label>Titel</mat-label>
         <input matInput formControlName="title" type="text" name="title" id="title" />
     </mat-form-field>
@@ -13,10 +13,33 @@
         <mat-datepicker #dueDateDp></mat-datepicker>
         <mat-datepicker-toggle matIconSuffix [for]="dueDateDp"></mat-datepicker-toggle>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Uhrzeit</mat-label>
-        <input matInput formControlName="due_time" />
+    <div class="form-group">
+        <mat-form-field appearance="outline">
+            <mat-label>Uhrzeit</mat-label>
+            <input (focus)="showTimepicker.set(true)" matInput [value]="createTodoForm.get('due_time')?.value" readonly="true" />
+        </mat-form-field>
+        <div class="form-group" [style.display]="showTimepicker() ? 'flex' : 'none'">
+            <app-timepicker (done)="showTimepicker.set(false)" class="picker" formControlName="due_time"></app-timepicker>
+            <!-- <button type="button" (click)="showTimepicker.set(false)" mat-button color="accent">
+            OK
+        </button> -->
+        </div>
+    </div>
+
+    <mat-checkbox>wiederholen</mat-checkbox>
+    <mat-checkbox>mehrmals täglich</mat-checkbox>
+    <mat-form-field>
+        <mat-label>Wie oft?</mat-label>
+        <input min="1" max="4" type="number" name="" id="" matInput />
     </mat-form-field>
+    <mat-radio-group>
+        <mat-radio-button>Täglich</mat-radio-button>
+        <mat-radio-button>Wöchentlich</mat-radio-button>
+        <mat-radio-button>Monatlich</mat-radio-button>
+    </mat-radio-group>
+    <!-- <mat-form-field>
+        <mat-label>wiederholen</mat-label>
+    </mat-form-field> -->
 
     <button mat-stroked-button color="primary" [disabled]="!createTodoForm.valid">
         Todo erstellen

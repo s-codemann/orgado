@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   Output,
+  signal,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TodosServiceService } from '../../../../service/todos-service.service';
@@ -16,7 +17,10 @@ import {
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatButton } from '@angular/material/button';
+import { TimepickerComponent } from '../../../common/timepicker/timepicker.component';
 
 @Component({
   selector: 'app-create-todo',
@@ -27,6 +31,9 @@ import { MatButton } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButton,
+    MatCheckboxModule,
+    TimepickerComponent,
+    MatRadioModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-todo.component.html',
@@ -40,6 +47,7 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dateAdapter.setLocale('de');
     this.createTodoForm = this.todosService.generateCreateTodoForm();
+    this.createTodoForm.valueChanges.subscribe((v) => console.log(v));
   }
   ngAfterViewInit(): void {
     // this.dueDateDp.set;
@@ -47,11 +55,29 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
   onSubmit() {
     console.log(this.createTodoForm.value, this.createTodoForm.valid);
     if (this.createTodoForm.valid) {
-      this.todosService.createTodo(this.createTodoForm.value).subscribe((v) => {
-        console.log(v);
-        this.created.emit(v);
-      });
+      const [dueHours, dueMinutes] =
+        this.createTodoForm.value.due_time.split(':');
+      const tdate = new Date(this.createTodoForm.value.due_date);
+
+      console.log(
+        'todo date: ',
+        +dueHours,
+        +dueMinutes,
+        this.createTodoForm.value.due_date,
+        tdate
+      );
+
+      tdate.setHours(+dueHours);
+      tdate.setMinutes(+dueMinutes);
+      console.log('todo date after set: ', tdate);
+      this.todosService
+        .createTodo({ ...this.createTodoForm.value, due_date: tdate })
+        .subscribe((v) => {
+          console.log(v);
+          this.created.emit(v);
+        });
     }
   }
   dueDateDp!: MatDatepicker<HTMLInputElement>;
+  showTimepicker = signal(false);
 }

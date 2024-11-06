@@ -10,7 +10,7 @@ import {
   providedIn: 'root',
 })
 export class AppLayoutService {
-  backgroundColor = signal('var(--primary-500)');
+  backgroundColor = signal('var(--background-color)');
   firstColor = '#2b8de2';
   changeColor = 'green';
   adjustColor = effect(

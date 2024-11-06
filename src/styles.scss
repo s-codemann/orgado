@@ -11,6 +11,7 @@
     --primary-500: hsl(220, 100%, 50%);
     --primary-900: hsl(220, 100%, 20%);
     --primary-100: hsl(215, 50%, 93%);
+    // --primary-100: hsl(213, 100%, 50%);
     --primary-500: hsl(215, 50%, 53%);
     --primary-900: hsl(215, 50%, 23%);
 
@@ -36,6 +37,8 @@
     --error-100: hsl(0, 70%, 90%);
     --error-500: hsl(0, 70%, 50%);
     --error-900: hsl(0, 70%, 20%);
+
+    --background-color: rgb(171, 77, 40);
 }
 
 body {
@@ -93,19 +96,13 @@ body {
 }
 
 .mat-dialog-panel {
-    background-color: red;
-    // margin: auto;
+    overflow: auto;
 }
 
-// .overlay-wrapper-
-.cdk-overlay-container {
-    .cdk-global-overlay-wrapper {
-        // justify-content: center;
-    }
-}
+.cdk-overlay-container {}
 
 .mat-dialog-backdrop {
-    background-color: rgba(255, 255, 255, 0.804);
+    background-color: rgba(175, 255, 96, 0.419);
     backdrop-filter: blur(0.2rem);
 
     // .mat-dialog-container {

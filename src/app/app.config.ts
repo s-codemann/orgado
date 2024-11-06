@@ -16,8 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {
-      enabled: true, //!isDevMode(),
+      enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
-    }), provideAnimationsAsync(),
+    }),
+    provideAnimationsAsync(),
   ],
 };

@@ -22,7 +22,7 @@ mat-form-field {
     width: 100%;
 
     input {
-        background-color: var(--primary-900);
+        // background-color: var(--primary-900);
         border: none;
         outline: none;
         border-bottom: 1px solid #fff;
@@ -38,6 +38,10 @@ textarea {
 
 textarea {
     padding: 1rem 0.5rem;
+}
+
+.picker {
+    margin: auto;
 }
 
 // button {

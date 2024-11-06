@@ -16,6 +16,9 @@ export class TodosServiceService {
   createTodo(todo: TtodoCreate) {
     return this.http.post(environment.backendUrl + '/todos', todo);
   }
+  deleteTodo(todoId: number) {
+    return this.http.delete(environment.backendUrl + '/todos?id=' + todoId);
+  }
 
   generateCreateTodoForm() {
     const todosForm = this.fb.group({
@@ -25,6 +28,7 @@ export class TodosServiceService {
       ]),
       description: new FormControl('', [Validators.minLength(2)]),
       due_date: new FormControl('', []),
+      due_time: new FormControl('', []),
     });
     return todosForm;
   }
