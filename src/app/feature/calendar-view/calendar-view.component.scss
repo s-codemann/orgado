@@ -5,6 +5,11 @@ table {
 }
 
 tr {
-    background-color: gray;
+    background-color: rgb(196, 213, 251);
+    // padding: 2rem 0.25rem;
     border-bottom: 1px solid #fff;
+
+    td {
+        // padding: 1rem;
+    }
 }

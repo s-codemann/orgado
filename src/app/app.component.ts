@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { buffer, concatMap, EMPTY, map, switchAll, switchMap } from 'rxjs';
 import { AppLayoutService } from './service/app-layout.service';
 import { HomeScreenComponent } from './home/home-screen/home-screen.component';
@@ -7,17 +7,22 @@ import { HttpClient } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
 import { NotificationService } from './service/notification.service';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
+import { fromBottomAnimation } from './animations';
+import { ChatComponent } from './feature/chat/chat.component';
+import { environment } from '../environments/environment.development';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HomeScreenComponent],
+  imports: [RouterOutlet, HomeScreenComponent, ChatComponent],
   providers: [provideNativeDateAdapter()],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  animations: [fromBottomAnimation],
 })
 export class AppComponent implements OnInit {
   constructor(private layoutService: AppLayoutService) {}
+  private contexts = inject(ChildrenOutletContexts);
   NS = inject(NotificationService);
   private dateAdapter = inject(DateAdapter);
   swPush = inject(SwPush);
@@ -25,19 +30,31 @@ export class AppComponent implements OnInit {
   todos$ = this.httpClient.get('https://jsonplaceholder.typicode.com/todos/1');
   title = 'orgado';
   isFullScreen = false;
-  // requestFullScreen = () => {
-  //   document.body.requestFullscreen();
-  //   this.isFullScreen = true;
-  //   if (this.isFullScreen) {
-  //     window.removeEventListener('pointerdown', this.requestFullScreen);
-  //   }
-  // };
-  f() {
-    document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+
+  getRouteAnimationData() {
+    const aData =
+      this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'];
+    console.log('ANIMATIONDATA:', aData);
+
+    return aData;
   }
+
   ngOnInit(): void {
+    this.httpClient
+      .post(environment.backendUrl + '/login', {
+        username: 'sasa',
+        password: 'fisch',
+      })
+      .subscribe((v) => console.log(v));
+    // const socket = new WebSocket('ws://localhost:3000/websocket');
+    // setInterval(() => console.log('WSOCKET', socket), 10000);
+    // setInterval(
+    //   () => socket.send(JSON.stringify({ what: 'is this msg?' })),
+    //   5000
+    // );
+    // console.log('WEBSOCKET: ', socket);
     this.dateAdapter.setLocale('de-de');
-    console.log('SWPUSH: ', this.swPush.isEnabled);
+
     this.swPush.notificationClicks.subscribe(({ action, notification }) => {
       console.log('SW NOTIFICATION: ', action, notification);
     });

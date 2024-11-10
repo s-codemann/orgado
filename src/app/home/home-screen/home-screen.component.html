@@ -21,7 +21,7 @@
     </app-overlay>
 </div>
 } @else{
-<div class="main-container todos from-bottom">
+<div class="main-container todos">
     @for (todo of todos$ | async; track $index) {
     <mat-card class="todo-card">
         <mat-card-header>

@@ -1,0 +1,31 @@
+@if(minified()){
+<button mat-raised-button (click)="minified.set(false)" class="minified">
+  Chat
+</button>
+} @else{
+<div class="chat-container">
+  <div class="messages-container">
+    @for(message of messages();track message){
+    <div style="margin: 5px 2px; border-bottom: 2px solid chartreuse">
+      <span>{{ message.chatMessage }}</span>
+    </div>
+    }
+  </div>
+  <div class="message-box-container">
+    <textarea
+      class="message-box"
+      #currentMessageField
+      [(ngModel)]="currentMessage"
+      name=""
+      id=""
+    ></textarea>
+    <button
+      (click)="sendCurrentMessage()"
+      mat-stroked-button
+      class="submit-message-btn"
+    >
+      schicken
+    </button>
+  </div>
+</div>
+}

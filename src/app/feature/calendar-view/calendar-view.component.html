@@ -1,7 +1,10 @@
 <table>
-    @for(hour of hours;track $index){
+    @for(timeFrameVal of timeFrameValues();track $index){
     <tr>
-        <td>{{ hour }}</td>
+        <td>{{ timeFrameVal.timeStr }}</td>
+        @for(todo of timeFrameVal.todos;track todo.id){
+        <td>{{ todo.title }}</td>
+        }
     </tr>
     }
 </table>
