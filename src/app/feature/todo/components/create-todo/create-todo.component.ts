@@ -47,33 +47,23 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dateAdapter.setLocale('de');
     this.createTodoForm = this.todosService.generateCreateTodoForm();
-    this.createTodoForm.valueChanges.subscribe((v) => console.log(v));
+    // this.createTodoForm.valueChanges.subscribe((v) => console.log(v));
   }
   ngAfterViewInit(): void {
     // this.dueDateDp.set;
   }
   onSubmit() {
-    console.log(this.createTodoForm.value, this.createTodoForm.valid);
     if (this.createTodoForm.valid) {
       const [dueHours, dueMinutes] =
         this.createTodoForm.value.due_time.split(':');
       const tdate = new Date(this.createTodoForm.value.due_date);
 
-      console.log(
-        'todo date: ',
-        +dueHours,
-        +dueMinutes,
-        this.createTodoForm.value.due_date,
-        tdate
-      );
-
       tdate.setHours(+dueHours);
       tdate.setMinutes(+dueMinutes);
-      console.log('todo date after set: ', tdate);
       this.todosService
         .createTodo({ ...this.createTodoForm.value, due_date: tdate })
         .subscribe((v) => {
-          console.log(v);
+          v;
           this.created.emit(v);
         });
     }

@@ -63,10 +63,6 @@ export class TimepickerComponent implements ControlValueAccessor {
     }
     return this.hoursStr() + ':' + this.minsStr();
   });
-  // timeChanged = effect(() => {
-  //   console.log('CHACHA', this.timeStr(), this.onChange);
-  //   this.onChange(this.timeStr());
-  // });
 
   onChange = (time: string | null) => {};
   registerOnChange(fn: any): void {
@@ -75,7 +71,6 @@ export class TimepickerComponent implements ControlValueAccessor {
   registerOnTouched(fn: any): void {}
   setDisabledState(isDisabled: boolean): void {}
   writeValue(time: String | null): void {
-    console.log('NEW TIME: ', time);
     if (time === null) {
       this.hours.set(null);
       this.minutes.set(null);

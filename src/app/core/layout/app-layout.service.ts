@@ -17,13 +17,6 @@ export class AppLayoutService {
     () => {
       const input = this.backgroundColor();
       if (input.includes('var')) {
-        console.log(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            this.backgroundColor()
-          ),
-          input.substring(input.indexOf('(') + 1, input.length - 1)
-        );
-
         this.backgroundColor.set(
           getComputedStyle(document.documentElement).getPropertyValue(
             input.substring(input.indexOf('(') + 1, input.length - 1)
@@ -41,18 +34,12 @@ export class AppLayoutService {
     { allowSignalWrites: true }
   );
   fullScreen() {
-    if (this.fullScreened) {
-      console.log('listener removed', document.body);
-    }
-    console.log('DBL');
     try {
       document.documentElement.requestFullscreen({ navigationUI: 'hide' });
       this.fullScreened = true;
     } catch {}
   }
 
-  constructor() {
-    // document.body.onclick = this.fullScreen;
-  }
+  constructor() {}
   fullScreened = false;
 }

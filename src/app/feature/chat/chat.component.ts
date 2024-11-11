@@ -7,9 +7,9 @@ import {
 } from '@angular/core';
 import { ChatService } from '../../service/chat.service';
 import { FormsModule } from '@angular/forms';
-import { WebsocketService } from '../../service/websocket.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { WebsocketService } from '../../shared/websocket/websocket.service';
 
 @Component({
   selector: 'app-chat',
@@ -25,7 +25,6 @@ export class ChatComponent {
   public minified = signal(true);
   @HostListener('keydown', ['$event'])
   handleEv(ev: any) {
-    console.log('CLICKI', ev.key);
     if (ev.key === 'Enter') {
       ev.preventDefault();
       console.log('SEND MESSAGE: ' + this.currentMessage());

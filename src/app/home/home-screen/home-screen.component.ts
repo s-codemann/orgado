@@ -40,16 +40,17 @@ export class HomeScreenComponent implements OnInit {
   protected readonly authStore = inject(AuthStore);
   // dialogRef =
   getTodos() {
-    return this.todosService.getTodos().pipe(
-      map((v) =>
-        v.map((entry) =>
-          entry.due_date
-            ? { ...entry, due_date: new Date(entry.due_date) }
-            : entry
+    return this.todosService
+      .getTodos()
+      .pipe(
+        map((v) =>
+          v.map((entry) =>
+            entry.due_date
+              ? { ...entry, due_date: new Date(entry.due_date) }
+              : entry
+          )
         )
-      ),
-      tap((v) => console.log(v))
-    );
+      );
   }
   todos$ = this.getTodos();
   openAdd() {
@@ -61,15 +62,11 @@ export class HomeScreenComponent implements OnInit {
     this.createTodoDialog = this.matDialog.open(CreateTodoComponent, {
       width: '95%',
       height: '80%',
-      // maxWidth: '100vw',
       panelClass: 'mat-dialog-panel',
       backdropClass: 'mat-dialog-backdrop',
       closeOnNavigation: true,
-      // direction: 'rtl',
     });
-    console.log('opened dialog: ', this.createTodoDialog);
     this.createTodoDialog.componentInstance?.created.subscribe((c) => {
-      console.log('CREATED EVENT EMIT: ', c);
       this.createTodoDialog.addPanelClass('to-bottom');
       this.todos$ = this.getTodos();
       setTimeout(() => {
@@ -79,7 +76,6 @@ export class HomeScreenComponent implements OnInit {
   }
   ngOnInit(): void {}
   fadeToBottom() {
-    console.log('matdi: ', this.matDialog, this.createTodoDialog);
     this.matDialog;
     // this.showCreateTodo.set(false);
     // this.overlayFadeOut.set(true);
@@ -89,7 +85,6 @@ export class HomeScreenComponent implements OnInit {
   }
   deleteTodo(id: number) {
     this.todosService.deleteTodo(id).subscribe((v) => {
-      console.log('TODO DELETED RESULT: ', v);
       this.todos$ = this.getTodos();
     });
   }

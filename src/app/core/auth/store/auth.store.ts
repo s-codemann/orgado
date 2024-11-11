@@ -29,8 +29,6 @@ export const AuthStore = signalStore(
       setToken(token: string) {
         patchState(store, { token: token });
         const parsedToken = authService.jwtDecode(token);
-        console.log('parsedTOKEN: ', parsedToken);
-        console.log('setting token: ', parsedToken);
         if (!parsedToken) {
           patchState(store, { user: null, isAuthenticated: false });
           localStorage.removeItem('token');

@@ -33,9 +33,6 @@ export class LoginComponent {
     if (!this.loginForm.valid) return;
     const { username, password } = this.loginForm.value;
     this.authService.login(username, password).subscribe((r: any) => {
-      // console.log('LOGIN RESULT: ', r);
-      // console.log('STOREDECODED: ', r, r.token);
-      console.log('STOREDECODED: ', this.authStore.decode(r.token));
       this.authStore.setToken(r.token);
       this.router.navigateByUrl('/');
     });

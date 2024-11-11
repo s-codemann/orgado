@@ -41,11 +41,7 @@ export class CalendarViewComponent {
         todos: this.todos()?.filter((t) => {
           if (!t.due_date) return false;
           const dueDate = new Date(t.due_date);
-          console.log(
-            t.title,
-            dueDate,
-            new Date(startDateTimestamp + this.displayTimeFrame() * (i + 1))
-          );
+
           if (
             dueDate >=
               new Date(startDateTimestamp + this.displayTimeFrame() * i) &&
@@ -58,12 +54,8 @@ export class CalendarViewComponent {
         }),
       });
     }
-    console.log('NEW TFS: ', tfs);
     return tfs;
   });
-  timeFrameValue(timeframeMS: number) {
-    // this.hours = tfs as any;
-  }
 
   timeUnits = this.calendarService.getTimeUnits();
   minutes = this.timeUnits.minutes;
