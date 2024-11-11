@@ -8,9 +8,10 @@ import { RouterLink } from '@angular/router';
 import { map, tap } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 // import { Dialog } from '@angular/cdk/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import { AuthStore } from '../../feature/auth/store/auth.store';
 // import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
@@ -36,6 +37,7 @@ export class HomeScreenComponent implements OnInit {
   todosService = inject(TodosServiceService);
   matDialog = inject(MatDialog);
   createTodoDialog!: MatDialogRef<CreateTodoComponent | undefined>;
+  protected readonly authStore = inject(AuthStore);
   // dialogRef =
   getTodos() {
     return this.todosService.getTodos().pipe(
@@ -51,11 +53,18 @@ export class HomeScreenComponent implements OnInit {
   }
   todos$ = this.getTodos();
   openAdd() {
+    history.pushState(
+      { stage: 'beforedialog' },
+      'beforedialog',
+      window.location.href
+    );
     this.createTodoDialog = this.matDialog.open(CreateTodoComponent, {
       width: '95%',
+      height: '80%',
       // maxWidth: '100vw',
       panelClass: 'mat-dialog-panel',
       backdropClass: 'mat-dialog-backdrop',
+      closeOnNavigation: true,
       // direction: 'rtl',
     });
     console.log('opened dialog: ', this.createTodoDialog);

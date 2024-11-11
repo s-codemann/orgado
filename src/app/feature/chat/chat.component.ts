@@ -9,11 +9,12 @@ import { ChatService } from '../../service/chat.service';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../service/websocket.service';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [FormsModule, MatButtonModule],
+  imports: [FormsModule, MatButtonModule, MatIconModule],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })

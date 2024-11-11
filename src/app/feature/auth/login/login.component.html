@@ -1,0 +1,13 @@
+{{ authStore.user() | json }}
+{{ authStore.token() | json }}
+<form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+  <mat-form-field>
+    <mat-label>Benutzername</mat-label>
+    <input type="text" name="" id="" matInput formControlName="username" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Passwort</mat-label>
+    <input type="password" name="" id="" matInput formControlName="password" />
+  </mat-form-field>
+  <button mat-raised-button>Login</button>
+</form>

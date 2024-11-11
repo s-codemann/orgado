@@ -1,12 +1,22 @@
-<a routerLink="/calendar"><button mat-mini-fab color="primary" class="calendar-btn">
-        <!-- Zum Kalender -->
-        <mat-icon fontIcon="calendar_today"></mat-icon>
-    </button></a>
-<button mat-flat-button (click)="openAdd()" class="add-btn">
-    <mat-icon class="mat-primary" fontIcon="add_circle"></mat-icon>
+<header>
+  <h1 style="margin: 0">
+    @if(authStore.user()){
+    {{ authStore.user()?.name }}'s }orgado
+  </h1>
+</header>
+<div class="shortcut-btns">
+  <button (click)="openAdd()" class="button" mat-mini-fab>
+    <mat-icon class="mat-primary add-icon" fontIcon="add_circle"></mat-icon>
+  </button>
+  <a class="calendar-btn" routerLink="/calendar"
+    ><button mat-mini-fab color="primary">
+      <!-- Zum Kalender -->
+      <mat-icon fontIcon="calendar_today"></mat-icon></button
+  ></a>
+</div>
+<!-- <button mat-flat-button (click)="openAdd()" class="add-btn">
     <h1 style="margin: 0">orgado</h1>
-    <!-- Aufgabe erstellen -->
-</button>
+</button> -->
 <!-- @if(showCreateTodo() === false){
 <button class="add-todo-btn" (click)="showCreateTodo.set(true)">+</button>
 } @else {
@@ -16,28 +26,32 @@
 
 @if(showCreateTodo() || overlayFadeOut()){
 <div class="main-container">
-    <app-overlay [class.done]="overlayFadeOut()">
-        <app-create-todo (created)="fadeToBottom()"></app-create-todo>
-    </app-overlay>
+  <app-overlay [class.done]="overlayFadeOut()">
+    <app-create-todo (created)="fadeToBottom()"></app-create-todo>
+  </app-overlay>
 </div>
 } @else{
 <div class="main-container todos">
-    @for (todo of todos$ | async; track $index) {
-    <mat-card class="todo-card">
-        <mat-card-header>
-            <mat-card-title>{{ todo.title }}</mat-card-title>@if(todo.due_date){
-            <mat-card-subtitle>
-                {{ todo.due_date | date : "dd.MM.yyyy H:mm" }} Uhr</mat-card-subtitle>
-            }
-        </mat-card-header>
+  @for (todo of todos$ | async; track $index) {
+  <mat-card class="todo-card">
+    <mat-card-header>
+      <mat-card-title>{{ todo.title }}</mat-card-title
+      >@if(todo.due_date){
+      <mat-card-subtitle>
+        {{ todo.due_date | date : "dd.MM.yyyy H:mm" }} Uhr</mat-card-subtitle
+      >
+      }
+    </mat-card-header>
 
-        <mat-card-content>{{ todo.description }}</mat-card-content>
-        <!-- <mat-card-actions><button mat-button color="accent">Erledigt</button></mat-card-actions> -->
-        <mat-card-footer><button (click)="deleteTodo(todo.id)" mat-button color="accent">
-                Erledigt
-            </button></mat-card-footer>
-    </mat-card>
-    <!-- <app-card [title]="todo.title" [content]="todo.description"></app-card> -->
-    }
+    <mat-card-content>{{ todo.description }}</mat-card-content>
+    <!-- <mat-card-actions><button mat-button color="accent">Erledigt</button></mat-card-actions> -->
+    <mat-card-footer
+      ><button (click)="deleteTodo(todo.id)" mat-button color="accent">
+        Erledigt
+      </button></mat-card-footer
+    >
+  </mat-card>
+  <!-- <app-card [title]="todo.title" [content]="todo.description"></app-card> -->
+  }
 </div>
 }

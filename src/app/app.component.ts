@@ -10,11 +10,13 @@ import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { fromBottomAnimation } from './animations';
 import { ChatComponent } from './feature/chat/chat.component';
 import { environment } from '../environments/environment.development';
+import { AuthStore } from './feature/auth/store/auth.store';
+import { AuthService } from './service/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HomeScreenComponent, ChatComponent],
+  imports: [RouterOutlet],
   providers: [provideNativeDateAdapter()],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -30,11 +32,12 @@ export class AppComponent implements OnInit {
   todos$ = this.httpClient.get('https://jsonplaceholder.typicode.com/todos/1');
   title = 'orgado';
   isFullScreen = false;
+  // aStore = inject(AuthStore);
 
   getRouteAnimationData() {
     const aData =
       this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'];
-    console.log('ANIMATIONDATA:', aData);
+    // console.log('ANIMATIONDATA:', aData);
 
     return aData;
   }
