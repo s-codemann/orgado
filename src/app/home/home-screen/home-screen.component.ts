@@ -11,7 +11,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { AuthStore } from '../../feature/auth/store/auth.store';
+import { AuthStore } from '../../core/auth/store/auth.store';
 // import { Dialog } from '@angular/cdk/dialog';
 
 @Component({

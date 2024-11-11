@@ -10,8 +10,7 @@ import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { fromBottomAnimation } from './animations';
 import { ChatComponent } from './feature/chat/chat.component';
 import { environment } from '../environments/environment.development';
-import { AuthStore } from './feature/auth/store/auth.store';
-import { AuthService } from './service/auth.service';
+import { AuthStore } from './core/auth/store/auth.store';
 
 @Component({
   selector: 'app-root',

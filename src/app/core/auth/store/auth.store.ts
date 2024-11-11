@@ -9,7 +9,7 @@ import {
 } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { computed, inject } from '@angular/core';
-import { AuthService } from '../../../service/auth.service';
+import { AuthService } from '../auth.service';
 
 const initialState: TAuthState = {
   user: null,

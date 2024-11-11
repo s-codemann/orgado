@@ -10,9 +10,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { AuthHeaderInterceptor } from './feature/auth/router/authInterceptor';
-import { AuthStore } from './feature/auth/store/auth.store';
-import { AuthService } from './service/auth.service';
+import { AuthHeaderInterceptor } from './core/auth/router/authInterceptor';
+import { AuthStore } from './core/auth/store/auth.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [

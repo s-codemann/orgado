@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AuthService } from '../../../service/auth.service';
+import { AuthService } from '../auth.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthStore } from '../store/auth.store';
 import { JsonPipe } from '@angular/common';

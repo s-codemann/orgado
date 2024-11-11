@@ -3,8 +3,8 @@ import { HomeScreenComponent } from './home/home-screen/home-screen.component';
 import { OverlayComponent } from './feature/common/overlay/overlay/overlay.component';
 import { CalendarViewComponent } from './feature/calendar-view/calendar-view.component';
 import { ChatComponent } from './feature/chat/chat.component';
-import { LoginComponent } from './feature/auth/login/login.component';
-import { isAuthenticatedGuard } from './feature/auth/router/isAuthenticated.guards';
+import { LoginComponent } from './core/auth/login/login.component';
+import { isAuthenticatedGuard } from './core/auth/router/isAuthenticated.guards';
 
 export const routes: Routes = [
   {
