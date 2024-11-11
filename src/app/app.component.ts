@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { buffer, concatMap, EMPTY, map, switchAll, switchMap } from 'rxjs';
-import { AppLayoutService } from './service/app-layout.service';
 import { HomeScreenComponent } from './home/home-screen/home-screen.component';
 import { HttpClient } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
@@ -11,6 +10,7 @@ import { fromBottomAnimation } from './animations';
 import { ChatComponent } from './feature/chat/chat.component';
 import { environment } from '../environments/environment.development';
 import { AuthStore } from './core/auth/store/auth.store';
+import { AppLayoutService } from './core/layout/app-layout.service';
 
 @Component({
   selector: 'app-root',

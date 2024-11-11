@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CardComponent } from '../../layout/card/card.component';
+import { CardComponent } from '../../core/layout/card/card.component';
 import { CommonModule } from '@angular/common';
 import { CreateTodoComponent } from '../../feature/todo/components/create-todo/create-todo.component';
 import { TodosServiceService } from '../../service/todos-service.service';
