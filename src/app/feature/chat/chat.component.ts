@@ -5,7 +5,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { ChatService } from '../../service/chat.service';
+import { ChatService } from './service/chat.service';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

@@ -1,8 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { CalendarService } from '../../service/calendar.service';
-import { TodosServiceService } from '../../service/todos-service.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { CalendarService } from './calendar.service';
+import { TodosServiceService } from '../todo/todos-service.service';
 
 @Component({
   selector: 'app-calendar-view',

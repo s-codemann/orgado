@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { HomeScreenComponent } from './home/home-screen/home-screen.component';
-import { OverlayComponent } from './feature/common/overlay/overlay/overlay.component';
+import { HomeScreenComponent } from './feature/home/home-screen/home-screen.component';
+import { OverlayComponent } from './core/layout/common/overlay/overlay/overlay.component';
 import { CalendarViewComponent } from './feature/calendar-view/calendar-view.component';
 import { ChatComponent } from './feature/chat/chat.component';
 import { LoginComponent } from './core/auth/login/login.component';

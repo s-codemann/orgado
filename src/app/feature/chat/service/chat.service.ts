@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { WebsocketService } from '../shared/websocket/websocket.service';
+import { WebsocketService } from '../../../shared/websocket/websocket.service';
 
 @Injectable({
   providedIn: 'root',

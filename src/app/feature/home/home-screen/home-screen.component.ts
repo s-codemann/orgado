@@ -1,18 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CardComponent } from '../../core/layout/card/card.component';
+import { CardComponent } from '../../../core/layout/card/card.component';
 import { CommonModule } from '@angular/common';
-import { CreateTodoComponent } from '../../feature/todo/components/create-todo/create-todo.component';
-import { TodosServiceService } from '../../service/todos-service.service';
-import { OverlayComponent } from '../../feature/common/overlay/overlay/overlay.component';
+import { CreateTodoComponent } from '../../todo/components/create-todo/create-todo.component';
+import { OverlayComponent } from '../../../core/layout/common/overlay/overlay/overlay.component';
 import { RouterLink } from '@angular/router';
 import { map, tap } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-// import { Dialog } from '@angular/cdk/dialog';
 import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { AuthStore } from '../../core/auth/store/auth.store';
-// import { Dialog } from '@angular/cdk/dialog';
+import { AuthStore } from '../../../core/auth/store/auth.store';
+import { TodosServiceService } from '../../todo/todos-service.service';
 
 @Component({
   selector: 'app-home-screen',

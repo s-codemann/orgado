@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
-import { Ttodo, TtodoCreate } from '../feature/todo/types/todo.type';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { environment } from '../../../environments/environment.development';
+import { Ttodo, TtodoCreate } from './model/todo.type';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 @if(minified()){
-<button mat-stroked-button (click)="minified.set(false)" class="minified">
-  Chat
+<button color="primary" mat-fab (click)="minified.set(false)" class="minified">
+  <mat-icon fontIcon="chat"></mat-icon>
 </button>
 } @else{
 <div class="chat-container">

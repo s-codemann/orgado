@@ -8,7 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TodosServiceService } from '../../../../service/todos-service.service';
 // import { MatDatePickerModule } from '@angular/material';
 import {
   MatDatepicker,
@@ -20,7 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButton } from '@angular/material/button';
-import { TimepickerComponent } from '../../../common/timepicker/timepicker.component';
+import { TimepickerComponent } from '../../../../core/layout/common/timepicker/timepicker.component';
+import { TodosServiceService } from '../../todos-service.service';
 
 @Component({
   selector: 'app-create-todo',

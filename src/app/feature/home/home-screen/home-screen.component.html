@@ -5,7 +5,12 @@
   </h1>
 </header>
 <div class="shortcut-btns">
-  <button (click)="openAdd()" class="button" mat-mini-fab>
+  <button
+    color="primary"
+    (click)="openAdd()"
+    class="button mat-primary"
+    mat-mini-fab
+  >
     <mat-icon class="mat-primary add-icon" fontIcon="add_circle"></mat-icon>
   </button>
   <a class="calendar-btn" routerLink="/calendar"
@@ -14,15 +19,6 @@
       <mat-icon fontIcon="calendar_today"></mat-icon></button
   ></a>
 </div>
-<!-- <button mat-flat-button (click)="openAdd()" class="add-btn">
-    <h1 style="margin: 0">orgado</h1>
-</button> -->
-<!-- @if(showCreateTodo() === false){
-<button class="add-todo-btn" (click)="showCreateTodo.set(true)">+</button>
-} @else {
-<button class="add-todo-btn" (click)="fadeToBottom()">-</button>
-} -->
-<!-- <app-card [content]="'hayayayayaa'"></app-card> -->
 
 @if(showCreateTodo() || overlayFadeOut()){
 <div class="main-container">

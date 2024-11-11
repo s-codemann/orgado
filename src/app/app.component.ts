@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { buffer, concatMap, EMPTY, map, switchAll, switchMap } from 'rxjs';
-import { HomeScreenComponent } from './home/home-screen/home-screen.component';
+import { HomeScreenComponent } from './feature/home/home-screen/home-screen.component';
 import { HttpClient } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
