@@ -8,7 +8,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { computed, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 
 const initialState: TAuthState = {
@@ -22,7 +22,6 @@ export const AuthStore = signalStore(
   withDevtools('auth'),
   withState(initialState),
   withMethods((store, authService = inject(AuthService)) => {
-    // const authService = inject(AuthService);
     return {
       decode: (jwt: string) => authService.jwtDecode(jwt),
       authService: authService.generateLoginForm,
@@ -38,9 +37,6 @@ export const AuthStore = signalStore(
         patchState(store, { user: payload.user });
         localStorage.setItem('token', token);
       },
-      //   setUser: (user: any, token: string) => {
-      //     patchState(store, { user, token });
-      //   },
     };
   }),
   withHooks((store) => ({
@@ -49,7 +45,6 @@ export const AuthStore = signalStore(
       const existingToken = localStorage.getItem('token');
       if (existingToken) {
         store.setToken(existingToken);
-        // patchState(store, { token: existingToken });
       }
     },
   }))

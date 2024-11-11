@@ -1,8 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
-import { buffer, concatMap, EMPTY, map, switchAll, switchMap } from 'rxjs';
-import { HomeScreenComponent } from './feature/home/home-screen/home-screen.component';
-import { HttpClient } from '@angular/common/http';
+import { concatMap, EMPTY } from 'rxjs';
 import { SwPush } from '@angular/service-worker';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { fromBottomAnimation } from './core/layout/animations/animations';
@@ -22,12 +20,11 @@ import { NotificationService } from './core/notification/notification.service';
   animations: [fromBottomAnimation],
 })
 export class AppComponent implements OnInit {
-  constructor(private layoutService: AppLayoutService) {}
+  constructor() {}
   private contexts = inject(ChildrenOutletContexts);
   NS = inject(NotificationService);
   private dateAdapter = inject(DateAdapter);
   swPush = inject(SwPush);
-  httpClient = inject(HttpClient);
   title = 'orgado';
   isFullScreen = false;
   // aStore = inject(AuthStore);

@@ -34,9 +34,7 @@ export class ChatComponent {
   messages = this.wsService.chatMessages;
   currentMessage = signal('');
   sendCurrentMessage() {
-    this.chatService.sendChatMessage(
-      JSON.stringify({ chatMessage: this.currentMessage() })
-    );
+    this.chatService.sendChatMessage({ chatMessage: this.currentMessage() });
     this.currentMessage.set('');
   }
 }
