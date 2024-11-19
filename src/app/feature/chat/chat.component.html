@@ -2,13 +2,90 @@
 <button color="primary" mat-fab (click)="minified.set(false)" class="minified">
   <mat-icon fontIcon="chat"></mat-icon>
 </button>
+
+} @else{ @if(chatGroups()){
+<div class="chats-container">
+  @for(group of chatStore.activeGroups() ; track group){
+
+  <!-- <h1>groups</h1>
+{{ group | json }} -->
+  <div class="chat-container">
+    <h2>{{ group[1].name }}</h2>
+    <div class="messages-container" #messagesContainer>
+      @for(message of messages();track message){
+      <div
+        #msg
+        class="text-message-container"
+        [class.own-message]="authStore.user()?.name === message.user"
+      >
+        <span>{{ message.user }}</span>
+        <span class="chat-message">{{ message.chatMessage }}</span>
+      </div>
+      }
+    </div>
+    <div class="message-box-container">
+      <textarea
+        spellcheck="false"
+        class="message-box"
+        #currentMessageField
+        [(ngModel)]="currentMessage"
+        name=""
+        id=""
+      ></textarea>
+      <button
+        (click)="sendCurrentMessage()"
+        mat-stroked-button
+        class="submit-message-btn"
+      >
+        schicken
+      </button>
+    </div>
+    <button
+      class="chat-overlay-btn minify-chat"
+      (click)="minified.set(true)"
+      mat-mini-fab
+    >
+      <mat-icon class="mat-primary" fontIcon="arrow_downward"></mat-icon>
+    </button>
+    <button
+      (click)="this.showGroups.set(true)"
+      color="primary"
+      mat-mini-fab
+      class="chat-overlay-btn search-chat"
+    >
+      <mat-icon fontIcon="menu"></mat-icon>
+    </button>
+  </div>
+
+  }
+</div>
+} @if(showGroups()){
+<div class="groups-container">
+  @for(group of chatGroups();track group[0]){
+  <div
+    (dblclick)="chatStore.closeGroup(group[0])"
+    (click)="chatStore.activateGroup(group[0])"
+    class="group-list-entry"
+  >
+    <span>{{ group[1].name }}</span>
+    <ul>
+      @for(member of group[1].members;track member.userId){
+      <p>{{ member.userName }}</p>
+      }
+    </ul>
+  </div>
+  }
+</div>
 } @else{
-<div class="chat-container">
-  <div class="messages-container">
+<!-- <div class="chat-container">
+  <div class="messages-container" #messagesContainer>
     @for(message of messages();track message){
-    <div class="text-message-container">
-      <span>{{ message.user }}</span
-      ><br />
+    <div
+      #msg
+      class="text-message-container"
+      [class.own-message]="authStore.user()?.name === message.user"
+    >
+      <span>{{ message.user }}</span>
       <span class="chat-message">{{ message.chatMessage }}</span>
     </div>
     }
@@ -30,7 +107,22 @@
       schicken
     </button>
   </div>
-  <button class="minify-chat-btn" (click)="minified.set(true)" mat-mini-fab>
+  </div> -->
+}
+<div class="menu">
+  <button
+    (click)="this.showGroups.set(!this.showGroups())"
+    color="primary"
+    mat-mini-fab
+    class="chat-overlay-btn search-chat"
+  >
+    <mat-icon fontIcon="menu"></mat-icon>
+  </button>
+  <button
+    class="chat-overlay-btn minify-chat"
+    (click)="minified.set(true)"
+    mat-mini-fab
+  >
     <mat-icon class="mat-primary" fontIcon="arrow_downward"></mat-icon>
   </button>
 </div>

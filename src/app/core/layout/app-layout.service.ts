@@ -15,6 +15,7 @@ export class AppLayoutService {
   changeColor = 'green';
   adjustColor = effect(
     () => {
+      console.log('SET BG EFFECT');
       const input = this.backgroundColor();
       if (input.includes('var')) {
         this.backgroundColor.set(

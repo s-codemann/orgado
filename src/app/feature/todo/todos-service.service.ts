@@ -11,7 +11,9 @@ export class TodosServiceService {
   constructor(private http: HttpClient, private fb: FormBuilder) {}
   getTodos() {
     console.log(environment.backendUrl);
-    return this.http.get<Ttodo[]>(environment.backendUrl + '/todos');
+    return this.http.get<Ttodo[]>(environment.backendUrl + '/todos', {
+      withCredentials: true,
+    });
   }
   createTodo(todo: TtodoCreate) {
     return this.http.post(environment.backendUrl + '/todos', todo);

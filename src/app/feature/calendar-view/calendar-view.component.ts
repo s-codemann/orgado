@@ -17,7 +17,7 @@ export class CalendarViewComponent {
   todos = toSignal(this.todosService.getTodos());
   timeFrameScale = signal(1000 * 60 * 30);
   displayTimeUnitsAmount = signal(24);
-  displayTimeFrame = signal(60 * 1000 * 60);
+  displayTimeFrame = signal(60 * 1000 * 15);
   timeFrameValues = computed(() => {
     const startDate = new Date();
     startDate.setMinutes(

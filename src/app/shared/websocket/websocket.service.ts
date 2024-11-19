@@ -16,13 +16,25 @@ export class WebsocketService {
     }
   }
   emit(event: string, payload: any) {
-    this.webSocketConnection.send(JSON.stringify(event, payload));
+    const serializedEvent = JSON.stringify({ event, payload });
+    this.webSocketConnection.send(serializedEvent);
   }
+
   chatMessages!: WritableSignal<any>;
   constructor() {
-    this.chatMessages = signal(new Array([]));
+    this.chatMessages = signal(new Array());
     this.webSocketConnection = this.connectWebSocket();
+    this.webSocketConnection.onopen = (e: any) => {
+      this.emit('chat-connect', null);
+      // th
+      // console.log('WS CONNECT!');
+      // this.webSocketConnection.
+      // console.log(this.webSocketConnection.readyState);
+    };
+    // this.webSocketConnection.
+    // this.webSocketConnection.on;
     this.webSocketConnection.onmessage = (ev) => {
+      console.log(ev);
       const message = this.parseMessage(ev);
       const socketMsgEv = new CustomEvent(message.event, {
         detail: message.payload,
@@ -33,17 +45,32 @@ export class WebsocketService {
     this.initListeners();
   }
   onChatMessage = (ev: any) => {
+    // this.emit('test-msg', { test: 'test' });
+    console.log('GOT MSG:', ev);
     this.chatMessages.update((msgs) => [...msgs, ev.detail]);
+  };
+  onChatConnect = (ev: any) => {
+    console.log('GOT MSG CONN:', ev);
+    // this.chatMessages.update((msgs) => [...msgs, ev.detail]);
+
+    this.chatMessages.set(ev.detail);
   };
   webSocketConnection: WebSocket;
 
   connectWebSocket() {
-    return new WebSocket('ws://' + environment.websocketUrl);
+    const ws = new WebSocket('ws://' + environment.websocketUrl);
+    ws.onerror = (e) => console.log('WS ERR', e);
+    ws.onclose = (e) => console.log('WS CLOSDE', e);
+    return ws;
   }
   initListeners() {
     this.webSocketConnection.addEventListener(
       'chat-message',
       this.onChatMessage
+    );
+    this.webSocketConnection.addEventListener(
+      'chat-history',
+      this.onChatConnect
     );
   }
 

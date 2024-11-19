@@ -5,6 +5,8 @@ import { CalendarViewComponent } from './feature/calendar-view/calendar-view.com
 import { ChatComponent } from './feature/chat/chat.component';
 import { LoginComponent } from './core/auth/login/login.component';
 import { isAuthenticatedGuard } from './core/auth/router/isAuthenticated.guards';
+import { inject } from '@angular/core';
+import { AuthStore } from './core/auth/store/auth.store';
 
 export const routes: Routes = [
   {
@@ -32,10 +34,12 @@ export const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarViewComponent,
+    canActivate: [isAuthenticatedGuard],
     data: { animation: 'calendarPage' },
   },
   {
     path: 'login',
+    canDeactivate: [isAuthenticatedGuard],
     component: LoginComponent,
   },
   //   {

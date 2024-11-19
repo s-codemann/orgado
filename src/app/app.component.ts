@@ -22,6 +22,7 @@ import { NotificationService } from './core/notification/notification.service';
 export class AppComponent implements OnInit {
   constructor() {}
   private contexts = inject(ChildrenOutletContexts);
+  private layoutService = inject(AppLayoutService);
   NS = inject(NotificationService);
   private dateAdapter = inject(DateAdapter);
   swPush = inject(SwPush);
@@ -58,11 +59,13 @@ export class AppComponent implements OnInit {
             return this.NS.requestSubscription();
           } else {
             console.log('ALREADY SUBSCRIBED: ', sub);
-            return EMPTY;
+            return this.NS.validateExistingClientSubscription();
           }
         })
       )
-      .subscribe();
+      .subscribe((v) => {
+        console.log('SUBSCRIPTION CHECK RESULT: ', v);
+      });
     const ev = new Event('beforeinstallprompt');
   }
 }

@@ -16,10 +16,14 @@ export class AuthService {
     });
   }
   login(username: string, password: string) {
-    return this.httpClient.post(environment.backendUrl + '/login', {
-      username,
-      password,
-    });
+    return this.httpClient.post(
+      environment.backendUrl + '/login',
+      {
+        username,
+        password,
+      },
+      { withCredentials: true }
+    );
   }
   jwtDecode(token: string | null) {
     const raw = token;
