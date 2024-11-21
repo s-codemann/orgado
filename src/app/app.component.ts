@@ -1,6 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
-import { concatMap, EMPTY } from 'rxjs';
+import {
+  catchError,
+  concatMap,
+  EMPTY,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
 import { SwPush } from '@angular/service-worker';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { fromBottomAnimation } from './core/layout/animations/animations';
@@ -9,6 +17,7 @@ import { environment } from '../environments/environment.development';
 import { AuthStore } from './core/auth/store/auth.store';
 import { AppLayoutService } from './core/layout/app-layout.service';
 import { NotificationService } from './core/notification/notification.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +31,7 @@ import { NotificationService } from './core/notification/notification.service';
 export class AppComponent implements OnInit {
   constructor() {}
   private contexts = inject(ChildrenOutletContexts);
+  private http = inject(HttpClient);
   private layoutService = inject(AppLayoutService);
   NS = inject(NotificationService);
   private dateAdapter = inject(DateAdapter);
@@ -39,6 +49,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.http
+    //   .post(
+    //     environment.backendUrl + '/web-push-subscription',
+    //     {
+    //       endpoint: 'endpoint',
+    //     },
+    //     { responseType: 'json', withCredentials: true }
+    //   )
+    //   .pipe(catchError((e) => of(e)))
+    //   .subscribe({
+    //     next: (v) => console.log('SUCC', v),
+    //     error: (err) => console.warn('WEBPUSHERR', err),
+    //     complete: () => console.log('WEBPUSHCOMP:ETE'),
+    //   });
     this.dateAdapter.setLocale('de-de');
 
     this.swPush.notificationClicks.subscribe(({ action, notification }) => {
@@ -61,7 +85,8 @@ export class AppComponent implements OnInit {
             console.log('ALREADY SUBSCRIBED: ', sub);
             return this.NS.validateExistingClientSubscription();
           }
-        })
+        }),
+        tap((v) => console.log('SUB CHANGED: ', v))
       )
       .subscribe((v) => {
         console.log('SUBSCRIPTION CHECK RESULT: ', v);

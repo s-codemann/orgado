@@ -22,7 +22,7 @@ export class AuthService {
         username,
         password,
       },
-      { withCredentials: true }
+      { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
     );
   }
   jwtDecode(token: string | null) {

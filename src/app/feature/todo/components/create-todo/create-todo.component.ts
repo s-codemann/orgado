@@ -21,6 +21,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButton } from '@angular/material/button';
 import { TimepickerComponent } from '../../../../core/layout/common/timepicker/timepicker.component';
 import { TodosServiceService } from '../../todos-service.service';
+import { TWeekDay } from '../../model/weekday';
 
 @Component({
   selector: 'app-create-todo',
@@ -44,15 +45,43 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
   private todosService = inject(TodosServiceService);
   private dateAdapter = inject(DateAdapter);
   createTodoForm!: FormGroup;
+  // weekDaysForm!: FormGroup;
   ngOnInit(): void {
     this.dateAdapter.setLocale('de');
     this.createTodoForm = this.todosService.generateCreateTodoForm();
+    // this.weekDaysForm = ;
+    this.createTodoForm.addControl(
+      'weekdaysForm',
+      this.todosService.getWeekdaysGroup()
+    );
     // this.createTodoForm.valueChanges.subscribe((v) => console.log(v));
   }
   ngAfterViewInit(): void {
     // this.dueDateDp.set;
   }
   onSubmit() {
+    console.log('VAL:', this.createTodoForm.value);
+    // return;
+    const selectedDays = Object.entries(
+      this.createTodoForm.value.weekdaysForm
+    ).reduce((acc, curr) => {
+      if (curr[1] === true) {
+        acc.push(curr[0] as TWeekDay);
+      }
+      return acc;
+    }, new Array<TWeekDay>());
+    console.log('SELDAYS: ', selectedDays);
+
+    // this.todosService.setTodoSchedule();
+    // for(const day in selectedDays)
+    // this.createTodoForm.value.weekdaysForm.reduce(
+    //   (acc: TWeekDay[], curr: any) => {
+    //     console.log('CURR', curr);
+    //   },
+    //   new Array()
+    // );
+
+    // return;
     if (this.createTodoForm.valid) {
       const [dueHours, dueMinutes] =
         this.createTodoForm.value.due_time.split(':');
@@ -61,7 +90,14 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
       tdate.setHours(+dueHours);
       tdate.setMinutes(+dueMinutes);
       this.todosService
-        .createTodo({ ...this.createTodoForm.value, due_date: tdate })
+        .createTodo({
+          ...this.createTodoForm.value,
+          due_date: tdate,
+          weekdaysForm: {
+            time: this.createTodoForm.value.weekdaysForm.time,
+            selectedDays: selectedDays,
+          },
+        })
         .subscribe((v) => {
           v;
           this.created.emit(v);
@@ -70,4 +106,5 @@ export class CreateTodoComponent implements OnInit, AfterViewInit {
   }
   dueDateDp!: MatDatepicker<HTMLInputElement>;
   showTimepicker = signal(false);
+  showScheduleTimePicker = signal(true);
 }

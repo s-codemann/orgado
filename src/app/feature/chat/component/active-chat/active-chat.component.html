@@ -1,0 +1,32 @@
+<!-- <div class="chat-container">
+  <h2>{{ group[1].name }}</h2>
+  <div class="messages-container" #messagesContainer>
+    @for(message of messages();track message){
+    <div
+      #msg
+      class="text-message-container"
+      [class.own-message]="authStore.user()?.name === message.user"
+    >
+      <span>{{ message.user }}</span>
+      <span class="chat-message">{{ message.chatMessage }}</span>
+    </div>
+    }
+  </div>
+  <div class="message-box-container">
+    <textarea
+      spellcheck="false"
+      class="message-box"
+      #currentMessageField
+      [(ngModel)]="currentMessage"
+      name=""
+      id=""
+    ></textarea>
+    <button
+      (click)="sendCurrentMessage()"
+      mat-stroked-button
+      class="submit-message-btn"
+    >
+      schicken
+    </button>
+  </div>
+</div> -->

@@ -14,7 +14,7 @@ import { TodosServiceService } from '../todo/todos-service.service';
 export class CalendarViewComponent {
   private calendarService = inject(CalendarService);
   private todosService = inject(TodosServiceService);
-  todos = toSignal(this.todosService.getTodos());
+  todos = toSignal(this.todosService.getTodos(true));
   timeFrameScale = signal(1000 * 60 * 30);
   displayTimeUnitsAmount = signal(24);
   displayTimeFrame = signal(60 * 1000 * 15);

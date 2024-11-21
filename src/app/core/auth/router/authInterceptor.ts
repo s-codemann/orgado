@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthStore } from '../store/auth.store';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of, tap, throwError } from 'rxjs';
 import { EventType } from '@angular/router';
 
 export const AuthHeaderInterceptor: HttpInterceptorFn = (req, next) => {
@@ -26,11 +26,12 @@ export const AuthHeaderInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((e) => {
       if (e instanceof HttpErrorResponse) {
         if (e.status === 401) {
-          console.log('OMG, LOGOUT');
-          authStore.logout();
+          console.log('OMG, LOGOUT', e, e.error.message, e.error);
+          // authStore.logout();
         }
       }
-      return of(e);
+      return throwError(() => e);
+      // return of(e);
     }),
     tap((ev) => {
       if ((ev as unknown as HttpErrorResponse).error) {
