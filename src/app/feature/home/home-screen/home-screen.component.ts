@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { CardComponent } from '../../../core/layout/card/card.component';
 import { CommonModule } from '@angular/common';
 import { CreateTodoComponent } from '../../todo/components/create-todo/create-todo.component';
@@ -10,12 +10,16 @@ import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { AuthStore } from '../../../core/auth/store/auth.store';
-import { TodosServiceService } from '../../todo/todos-service.service';
+import { TodosService } from '../../todo/todos.service';
+import { TodosStore } from '../../todo/todo.store';
+import { TodoCardComponent } from '../../todo/components/todo-card/todo-card.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-home-screen',
   standalone: true,
   imports: [
+    TodoCardComponent,
     CardComponent,
     CommonModule,
     // MatDialogModule,
@@ -32,23 +36,23 @@ import { TodosServiceService } from '../../todo/todos-service.service';
 export class HomeScreenComponent implements OnInit {
   overlayFadeOut = signal(false);
   showCreateTodo = signal(false);
-  todosService = inject(TodosServiceService);
+  todosService = inject(TodosService);
   matDialog = inject(MatDialog);
   createTodoDialog!: MatDialogRef<CreateTodoComponent | undefined>;
   protected readonly authStore = inject(AuthStore);
+  protected readonly todosStore = inject(TodosStore);
   // dialogRef =
   getTodos() {
-    return this.todosService
-      .getTodos()
-      .pipe(
-        map((v) =>
-          v.map((entry) =>
-            entry.due_date
-              ? { ...entry, due_date: new Date(entry.due_date) }
-              : entry
-          )
+    return this.todosService.getTodos().pipe(
+      tap((v) => console.log('TODUU', v)),
+      map((v) =>
+        v.map((entry) =>
+          entry.due_date
+            ? { ...entry, due_date: new Date(entry.due_date) }
+            : entry
         )
-      );
+      )
+    );
   }
   todos$ = this.getTodos();
   openAdd() {
@@ -66,13 +70,24 @@ export class HomeScreenComponent implements OnInit {
     });
     this.createTodoDialog.componentInstance?.created.subscribe((c) => {
       this.createTodoDialog.addPanelClass('to-bottom');
-      this.todos$ = this.getTodos();
+      // this.todos$ = this.getTodos();
+      console.log('CREATED RESULT: ', c);
+      if (!(c instanceof HttpErrorResponse)) {
+        this.todosStore.addTodo(c);
+      }
       setTimeout(() => {
         this.createTodoDialog.close();
       }, 600);
     });
   }
-  ngOnInit(): void {}
+  teffect = effect(() => {
+    console.log('STORE TODOS: ', this.todosStore.todos());
+    console.log('STORE TODOS Entity: ', this.todosStore.entityMap());
+    console.log('STORE TODOS Entities: ', this.todosStore.entities());
+  });
+  ngOnInit(): void {
+    this.todosStore.getTodos();
+  }
   fadeToBottom() {
     this.matDialog;
     // this.showCreateTodo.set(false);

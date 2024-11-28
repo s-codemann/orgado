@@ -8,15 +8,16 @@ import {
 } from '@angular/forms';
 import { environment } from '../../../environments/environment.development';
 import { Ttodo, TtodoCreate } from './model/todo.type';
+import { TTodo } from './todo.store';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TodosServiceService {
+export class TodosService {
   constructor(private http: HttpClient, private fb: FormBuilder) {}
   getTodos(withSchedule: boolean = false) {
     console.log(environment.backendUrl);
-    return this.http.get<Ttodo[]>(
+    return this.http.get<TTodo[]>(
       environment.backendUrl +
         '/todos' +
         ((withSchedule && '?schedule=true') || ''),

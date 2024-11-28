@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { CalendarService } from './calendar.service';
-import { TodosServiceService } from '../todo/todos-service.service';
+import { TodosService } from '../todo/todos.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -13,7 +13,7 @@ import { TodosServiceService } from '../todo/todos-service.service';
 })
 export class CalendarViewComponent {
   private calendarService = inject(CalendarService);
-  private todosService = inject(TodosServiceService);
+  private todosService = inject(TodosService);
   todos = toSignal(this.todosService.getTodos(true));
   timeFrameScale = signal(1000 * 60 * 30);
   displayTimeUnitsAmount = signal(24);

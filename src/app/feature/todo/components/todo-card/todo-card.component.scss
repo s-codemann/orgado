@@ -1,0 +1,16 @@
+:host {
+  min-width: 260px;
+}
+
+.todo-card {
+  width: 100%;
+  max-width: 300px;
+  min-height: 150px;
+  margin: 0 auto;
+  color: rgb(124, 164, 138);
+
+  mat-card-footer {
+    margin-top: auto;
+    padding: 0.5rem 0.75rem;
+  }
+}

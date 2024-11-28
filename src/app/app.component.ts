@@ -1,5 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
+import {
+  ChildrenOutletContexts,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import {
   catchError,
   concatMap,
@@ -18,11 +23,20 @@ import { AuthStore } from './core/auth/store/auth.store';
 import { AppLayoutService } from './core/layout/app-layout.service';
 import { NotificationService } from './core/notification/notification.service';
 import { HttpClient } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    RouterLinkActive,
+    // RouterOutlet,
+  ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

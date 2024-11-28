@@ -25,9 +25,12 @@ export const AuthHeaderInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((e) => {
       if (e instanceof HttpErrorResponse) {
+        if (e.status === 401 && e.error.message === 'Expired Token') {
+          authStore.logout();
+        }
+        console.log('401 MESSAGE: ', e.error.message, e.error);
         if (e.status === 401) {
           console.log('OMG, LOGOUT', e, e.error.message, e.error);
-          // authStore.logout();
         }
       }
       return throwError(() => e);
