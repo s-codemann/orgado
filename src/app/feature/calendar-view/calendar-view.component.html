@@ -1,10 +1,12 @@
 <table>
-    @for(timeFrameVal of timeFrameValues();track $index){
-    <tr>
-        <td>{{ timeFrameVal.timeStr }}</td>
-        @for(todo of timeFrameVal.todos;track todo.id){
-        <td>{{ todo.title }}</td>
-        }
-    </tr>
+  @for(timeFrameVal of timeFrameValues();track $index){
+  <tr>
+    <td>{{ timeFrameVal.timeStr }}</td>
+    @for(todo of timeFrameVal.oneOffTodos;track todo.id){
+    <td>{{ todo.title }}</td>
+    } @for(todo of timeFrameVal.repeatableTodos;track todo.id){
+    <td style="background-color: palegoldenrod">{{ todo.title }}</td>
     }
+  </tr>
+  }
 </table>

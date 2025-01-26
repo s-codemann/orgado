@@ -1,6 +1,6 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { CardComponent } from '../../../core/layout/card/card.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CreateTodoComponent } from '../../todo/components/create-todo/create-todo.component';
 import { OverlayComponent } from '../../../core/layout/common/overlay/overlay/overlay.component';
 import { RouterLink } from '@angular/router';
@@ -14,6 +14,7 @@ import { TodosService } from '../../todo/todos.service';
 import { TodosStore } from '../../todo/todo.store';
 import { TodoCardComponent } from '../../todo/components/todo-card/todo-card.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home-screen',
@@ -29,6 +30,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     RouterLink,
     MatCardModule,
     MatIcon,
+    DatePipe,
   ],
   templateUrl: './home-screen.component.html',
   styleUrl: './home-screen.component.scss',
@@ -54,7 +56,9 @@ export class HomeScreenComponent implements OnInit {
       )
     );
   }
+  todos = toSignal(this.todosService.getDueTodoOccurances());
   todos$ = this.getTodos();
+  dueOccurances$ = this.todosService.getDueTodoOccurances();
   openAdd() {
     history.pushState(
       { stage: 'beforedialog' },

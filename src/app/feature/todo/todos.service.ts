@@ -9,6 +9,7 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { Ttodo, TtodoCreate } from './model/todo.type';
 import { TTodo } from './todo.store';
+import { TCreateTodoForm } from './model/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -55,13 +56,18 @@ export class TodosService {
   getWeekdaysGroup() {
     return new FormGroup({
       time: new FormControl('', [Validators.required]),
-      mo: new FormControl(false),
-      di: new FormControl(false),
-      mi: new FormControl(false),
-      do: new FormControl(false),
-      fr: new FormControl(false),
-      sa: new FormControl(false),
-      so: new FormControl(false),
+      days: new FormGroup({
+        mo: new FormControl(false),
+        di: new FormControl(false),
+        mi: new FormControl(false),
+        do: new FormControl(false),
+        fr: new FormControl(false),
+        sa: new FormControl(false),
+        so: new FormControl(false),
+      }),
     });
+  }
+  getDueTodoOccurances() {
+    return this.http.get(environment.backendUrl + '/todo-occurances/due');
   }
 }

@@ -1,8 +1,16 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { CalendarService } from './calendar.service';
 import { TodosService } from '../todo/todos.service';
+import { TodosStore, TTodoWithNextDue } from '../todo/todo.store';
 
 @Component({
   selector: 'app-calendar-view',
@@ -11,10 +19,14 @@ import { TodosService } from '../todo/todos.service';
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss',
 })
-export class CalendarViewComponent {
+export class CalendarViewComponent implements OnInit {
   private calendarService = inject(CalendarService);
   private todosService = inject(TodosService);
-  todos = toSignal(this.todosService.getTodos(true));
+  a = effect(() => {
+    console.log('TFCHANGED', this.timeFrameValues());
+  });
+  private readonly todosStore = inject(TodosStore);
+  // todos = toSignal(this.todosService.getTodos(true));
   timeFrameScale = signal(1000 * 60 * 30);
   displayTimeUnitsAmount = signal(24);
   displayTimeFrame = signal(60 * 1000 * 15);
@@ -38,14 +50,40 @@ export class CalendarViewComponent {
           displayDateTimeDate.getHours() +
           ':' +
           displayDateTimeDate.getMinutes().toString().padStart(2, '0'),
-        todos: this.todos()?.filter((t) => {
-          if (!t.due_date) return false;
-          const dueDate = new Date(t.due_date);
+        oneOffTodos: this.todosStore.oneOffTodos()?.filter((t) => {
+          // if (!t.due_date) return false;
+          if (t.due_date) {
+            const dueDate = new Date(t.due_date);
+            if (
+              dueDate >=
+                new Date(startDateTimestamp + this.displayTimeFrame() * i) &&
+              dueDate <
+                new Date(startDateTimestamp + this.displayTimeFrame() * (i + 1))
+            ) {
+              return true;
+            }
+          }
+          //  else if ((t as TTodoWithNextDue).schedule) {
+          //   const nextDue = (t as TTodoWithNextDue).nextDue;
 
+          //   if (
+          //     nextDue >=
+          //       new Date(startDateTimestamp + this.displayTimeFrame() * i) &&
+          //     nextDue <
+          //       new Date(startDateTimestamp + this.displayTimeFrame() * (i + 1))
+          //   ) {
+          //     return true;
+          //   }
+          // }
+          return false;
+        }),
+        repeatableTodos: this.todosStore.repeatableTodos().filter((rt) => {
+          const nextDue = rt.repeatableTodoSchedules.nextDue;
+          console.log('REPEATABLE NEXTDUE: ', nextDue, rt);
           if (
-            dueDate >=
+            nextDue >=
               new Date(startDateTimestamp + this.displayTimeFrame() * i) &&
-            dueDate <
+            nextDue <
               new Date(startDateTimestamp + this.displayTimeFrame() * (i + 1))
           ) {
             return true;
@@ -54,10 +92,18 @@ export class CalendarViewComponent {
         }),
       });
     }
+    console.log('TFS: ', tfs);
     return tfs;
   });
 
   timeUnits = this.calendarService.getTimeUnits();
   minutes = this.timeUnits.minutes;
   hours = this.timeUnits.hours;
+
+  ngOnInit(): void {
+    console.log('ONINIT', this.todosStore.entities());
+    if (this.todosStore.entities().length === 0) {
+      this.todosStore.getTodos();
+    }
+  }
 }

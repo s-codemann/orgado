@@ -6,23 +6,37 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import { addEntity, setEntities, withEntities } from '@ngrx/signals/entities';
+import {
+  addEntity,
+  EntityId,
+  setEntities,
+  updateEntity,
+  withEntities,
+} from '@ngrx/signals/entities';
 import { TodosService } from './todos.service';
 import { computed, inject } from '@angular/core';
+import { ScheduleService } from '../../shared/cron/schedule.service';
 
 export type TTodo = {
   id: number;
-  description: string;
+  description: string | null;
   created_at: string;
   updated_at: string;
   title: string;
-  repeatable: boolean | null;
+  repeatable: boolean;
   userId: number;
-  due_date: string | null;
+  due_date: Date | null;
   due_time: string | null;
 };
+export type TTodoWithSchedule = TTodo & {
+  repeatable: true;
+  repeatableTodoSchedules: any;
+};
+export type TTodoWithNextDue = TTodoWithSchedule & {
+  nextDue: Date;
+};
 export type TTodosState = {
-  todos: TTodo[];
+  todos: TTodo | TTodoWithSchedule[];
   loading: boolean;
   error: null;
 };
@@ -36,9 +50,10 @@ const initialState: TTodosState = {
 export const TodosStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withEntities<TTodo>(),
+  withEntities<TTodo | TTodoWithSchedule>(),
   withMethods((store) => {
     const todosService = inject(TodosService);
+    const scheduleService = inject(ScheduleService);
     return {
       getTodos: () => {
         patchState(store, { loading: true });
@@ -63,15 +78,60 @@ export const TodosStore = signalStore(
           },
         });
       },
-      addTodo: (todo: TTodo) => patchState(store, addEntity(todo)),
+      addTodo: (todo: TTodo) => {
+        patchState(store, addEntity(todo));
+        store.entities().sort((a, b) => {
+          return new Date(a.created_at).getTime() >
+            new Date(b.created_at).getTime()
+            ? -1
+            : 1;
+        });
+      },
+      updateAfterDue: (todo: TTodoWithSchedule) => {
+        patchState(
+          store,
+          updateEntity({
+            id: todo.id as EntityId,
+            changes: {
+              //@ts-ignore
+              repeatableTodoSchedules: [
+                ...todo.repeatableTodoSchedules.schedules,
+              ],
+            },
+          })
+        );
+      },
     };
   }),
   withComputed((store) => {
+    const schedulesService = inject(ScheduleService);
     return {
       repeatableTodos: computed(
         () => {
-          console.log('COMPUTE REPEATABLES: ', store.entities());
-          return store.entities().filter((t) => t.repeatable);
+          console.log('NEW TODO SET: ', store.entities());
+          const repeatables = store
+            .entities()
+            .filter((t) => t.repeatable) as TTodoWithSchedule[];
+          const withNextDue = repeatables.map((r) => {
+            return {
+              ...r,
+              repeatableTodoSchedules: {
+                schedules: r.repeatableTodoSchedules,
+                nextDue: schedulesService.getNextDue(r),
+              },
+            };
+            // const schedule = schedulesService.parseCronSchedule(
+            //   r.schedule.cron_schedule
+            // );
+            // console.log('MAP DUE SCHEDULE: ', schedule);
+            // return {
+            //   ...r,
+            //   schedule: { ...r.schedule, nextDue: schedule.next()!.toDate() },
+            // };
+          });
+          console.log('GOT REPEATABLES:', withNextDue);
+          //   console.log('COMPUTE REPEATABLES: ', );
+          return withNextDue as TTodoWithNextDue[];
         }
 
         // store.todos().filter((t) => t.repeatable)

@@ -1,33 +1,83 @@
 <div class="picker-container">
-    <div class="hours time-container">
-        <button type="button" mat-button color="accent" (click)="addHours()" class="hours-increase">
-            +
-        </button>
-        <mat-form-field subscriptSizing="dynamic">
-            <input matInput [value]="hoursStr()" type="text" name="" id="" class="hours-value" />
-        </mat-form-field>
-        <button type="button" mat-button color="accent" (click)="decHours()" class="hours-decrease">
-            -
-        </button>
-    </div>
-    <div class="minutes time-container">
-        <button type="button" mat-button color="accent" (pressed)="addMinutes()" (click)="addMinutes()" class="minute-increase">
-            +
-        </button>
-        <mat-form-field subscriptSizing="dynamic">
-            <input matInput [value]="minsStr()" type="text" name="" id="" class="minutes-value" />
-        </mat-form-field>
-        <button type="button" mat-button color="accent" (click)="decMinutes()" class="minutes-decrease">
-            -
-        </button>
-    </div>
+  <div class="hours time-container">
+    <button
+      type="button"
+      mat-button
+      color="accent"
+      (click)="addHours()"
+      class="hours-increase"
+    >
+      +
+    </button>
+    <mat-form-field (wheel)="wheelHours($event)" subscriptSizing="dynamic">
+      <input
+        matInput
+        [value]="hoursStr()"
+        type="text"
+        name=""
+        id=""
+        class="hours-value"
+      />
+    </mat-form-field>
+    <button
+      type="button"
+      mat-button
+      color="accent"
+      (click)="decHours()"
+      class="hours-decrease"
+    >
+      -
+    </button>
+  </div>
+  <div class="minutes time-container">
+    <button
+      type="button"
+      mat-button
+      color="accent"
+      (pressed)="addMinutes()"
+      (click)="addMinutes()"
+      class="minute-increase"
+    >
+      +
+    </button>
+    <mat-form-field (wheel)="wheelMinutes($event)" subscriptSizing="dynamic">
+      <input
+        matInput
+        [value]="minsStr()"
+        type="text"
+        name=""
+        id=""
+        class="minutes-value"
+      />
+    </mat-form-field>
+    <button
+      type="button"
+      mat-button
+      color="accent"
+      (click)="decMinutes()"
+      class="minutes-decrease"
+    >
+      -
+    </button>
+  </div>
 </div>
 <div class="buttons">
-    <button [disabled]="this.timeStr() === null" (click)="setNull()" color="warn" mat-mini-fab>
-        <mat-icon fontIcon="delete"></mat-icon>
-    </button>
-    <button color="accent" mat-mini-fab type="button" (click)="setValue()">
-        <!-- übernehmen -->
-        <mat-icon fontIcon="done"></mat-icon>
-    </button>
+  <button
+    [disabled]="this.timeStr() === null"
+    (click)="setNull()"
+    color="warn"
+    mat-mini-fab
+  >
+    <mat-icon fontIcon="delete"></mat-icon>
+  </button>
+  <button
+    [disabled]="disabledSig()"
+    color="accent"
+    mat-mini-fab
+    type="button"
+    (click)="setValue()"
+  >
+    <!-- übernehmen -->
+    <mat-icon fontIcon="done"></mat-icon>
+  </button>
 </div>

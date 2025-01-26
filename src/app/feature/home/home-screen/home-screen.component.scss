@@ -56,13 +56,18 @@ header {
   margin-top: auto;
   // height: 70%;
   // overflow: auto;
-  gap: 1rem;
+  gap: 3rem;
   max-width: 1300px;
 
   // padding: 2rem 0;
   // padding-top: 5%;
 
   &.todos {
+    h2 {
+      width: 100%;
+      grid-column: span 2;
+    }
+
     // border: 2px solid chartreuse;
     // margin-top: 2rem;
   }
@@ -113,19 +118,23 @@ header {
 }
 
 .repeatable-todos-container {
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width: 50%;
   overflow: auto;
   max-height: 100%;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: var(--primary-900) var(--accent-900);
 }
 
 .one-off-todos-container {
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
   width: 50%;
   overflow: auto;

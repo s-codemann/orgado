@@ -52,6 +52,7 @@ export class TimepickerComponent implements ControlValueAccessor {
   width = input('100%');
   minutesStep = input(5);
 
+  // nullStr = "--:--"
   disabledSig = signal(false);
   hours = signal<number | null>(null);
   hoursStr = computed(() => this.toTimeString(this.hours()));
@@ -63,13 +64,19 @@ export class TimepickerComponent implements ControlValueAccessor {
     }
     return this.hoursStr() + ':' + this.minsStr();
   });
+  emitNewValue = effect(() => {
+    this.onChange(this.timeStr());
+  });
 
   onChange = (time: string | null) => {};
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
   registerOnTouched(fn: any): void {}
-  setDisabledState(isDisabled: boolean): void {}
+  setDisabledState(isDisabled: boolean): void {
+    console.log('TIMEPICKER DISABLED STATE: ', isDisabled);
+    this.disabledSig.set(isDisabled);
+  }
   writeValue(time: String | null): void {
     if (time === null) {
       this.hours.set(null);
@@ -137,12 +144,25 @@ export class TimepickerComponent implements ControlValueAccessor {
     } else return '0' + unit.toString();
   }
   setValue() {
-    this.onChange(this.timeStr());
+    // this.onChange(this.timeStr());
+    if (this.disabledSig()) return;
     this.done.emit();
   }
   setNull() {
     this.minutes.set(null);
     this.hours.set(null);
     this.onChange(null);
+  }
+  wheelHours(ev: WheelEvent) {
+    console.log('hi scroll', ev);
+    if (ev.deltaY > 0) {
+      this.decHours();
+    } else this.addHours();
+  }
+  wheelMinutes(ev: WheelEvent) {
+    console.log('hi scroll', ev);
+    if (ev.deltaY > 0) {
+      this.decMinutes();
+    } else this.addMinutes();
   }
 }

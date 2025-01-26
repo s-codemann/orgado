@@ -27,10 +27,15 @@
   </app-overlay>
 </div>
 } @else{
+<h2>Fällige Aufgaben</h2>
+@for(todo of $any(todos()); track todo.user.id){
+<span>{{ todo.occurance.due_at | date : "dd:MM HH:mm" }} Uhr</span>
+<!-- <app-todo-card [todo]="todo.todos"></app-todo-card> -->
+}
 <div class="main-container todos">
   <div class="one-off-todos-container">
     <h2>Einmalige Aufgaben</h2>
-    @for (todo of todosStore.oneOffTodos() ; track todo.id) {
+    @for (todo of todosStore.oneOffTodos() ; track todo.id;) {
     <app-todo-card [todo]="todo"></app-todo-card>
     <!-- <mat-card
       class="todo-card"

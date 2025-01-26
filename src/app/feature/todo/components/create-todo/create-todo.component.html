@@ -1,77 +1,178 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="createTodoForm">
-    <mat-form-field appearance="outline" spellcheck="false">
-        <mat-label>Titel</mat-label>
-        <input matInput formControlName="title" type="text" name="title" id="title" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-        <mat-label>Beschreibung</mat-label>
-        <textarea matInput formControlName="description" type="text" name="desc" id="description"></textarea>
-    </mat-form-field>
+  <mat-form-field appearance="outline" spellcheck="false">
+    <mat-label>Titel</mat-label>
+    <input
+      matInput
+      formControlName="title"
+      type="text"
+      name="title"
+      id="title"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Beschreibung</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      type="text"
+      name="desc"
+      id="description"
+    ></textarea>
+  </mat-form-field>
 
-    <mat-checkbox formControlName="repeatable">wiederholen</mat-checkbox>
-    @if(!todoRepeatable()){
-
+  <mat-checkbox formControlName="repeatable">wiederholen</mat-checkbox>
+  @if(!todoRepeatable()){
+  <mat-form-field appearance="outline">
+    <mat-label>Fällig</mat-label>
+    <input formControlName="due_date" matInput [matDatepicker]="dueDateDp" />
+    <mat-datepicker #dueDateDp></mat-datepicker>
+    <mat-datepicker-toggle
+      matIconSuffix
+      [for]="dueDateDp"
+    ></mat-datepicker-toggle>
+  </mat-form-field>
+  <div class="form-group">
     <mat-form-field appearance="outline">
-        <mat-label>Fällig</mat-label>
-        <input formControlName="due_date" matInput [matDatepicker]="dueDateDp" />
-        <mat-datepicker #dueDateDp></mat-datepicker>
-        <mat-datepicker-toggle matIconSuffix [for]="dueDateDp"></mat-datepicker-toggle>
+      <mat-label>Uhrzeit</mat-label>
+      <input
+        (focus)="showTimepicker.set(true)"
+        matInput
+        [value]="createTodoForm.get('due_time')?.value"
+        readonly="true"
+      />
     </mat-form-field>
-    <div class="form-group">
-        <mat-form-field appearance="outline">
-            <mat-label>Uhrzeit</mat-label>
-            <input (focus)="showTimepicker.set(true)" matInput [value]="createTodoForm.get('due_time')?.value" readonly="true" />
-        </mat-form-field>
-        <div class="form-group" [style.display]="showTimepicker() ? 'flex' : 'none'">
-            <app-timepicker (done)="showTimepicker.set(false)" class="picker" formControlName="due_time"></app-timepicker>
-        </div>
+    <div
+      class="form-group"
+      [style.display]="showTimepicker() ? 'flex' : 'none'"
+    >
+      <app-timepicker
+        (done)="showTimepicker.set(false)"
+        class="picker"
+        formControlName="due_time"
+      ></app-timepicker>
     </div>
-    } @if(todoRepeatable()){
-    <!-- <h1>HI :)</h1> -->
-    <div class="weekdays-selection" formGroupName="weekdaysForm">
-        <div class="schedule-timepicker-container" [style.display]="
-        showScheduleTimePicker() ||
-        !createTodoForm.get('weekdaysForm')?.get('time')?.value
-          ? 'flex'
-          : 'none'
-      ">
-
-            <app-timepicker (done)="showScheduleTimePicker.set(false)" formControlName="time"></app-timepicker>
-        </div>
-
-        @if(!showScheduleTimePicker() &&
-        createTodoForm.get("weekdaysForm")?.get("time")?.value) {
-        <mat-form-field class="selected-schedule-time" (click)="showScheduleTimePicker.set(true)">
-            <mat-label>Uhrzeit</mat-label>
-            <input matInput formControlName="time" readonly="" />
-        </mat-form-field>
-        }
-        <div class="weekdays">
-            <mat-checkbox formControlName="mo">Mo</mat-checkbox>
-            <mat-checkbox formControlName="di">Di</mat-checkbox>
-            <mat-checkbox formControlName="mi">Mi</mat-checkbox>
-            <mat-checkbox formControlName="do">Do</mat-checkbox>
-            <mat-checkbox formControlName="fr">Fr</mat-checkbox>
-            <mat-checkbox formControlName="sa">Sa</mat-checkbox>
-            <mat-checkbox formControlName="so">So</mat-checkbox>
-        </div>
+  </div>
+  } @if(todoRepeatable()){
+  <div formArrayName="schedules" class="todo-schedules">
+    @for(s of schedules.controls; track $index ){
+    <div class="added-schedule-container">
+      Zeit: {{ s.value.time }}
+      <div class="selected-weekdays">
+        <mat-checkbox disabled="" [checked]="s.value.days.mo">Mo</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.di">Di</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.mi">Mi</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.do">Do</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.fr">Fr</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.sa">Sa</mat-checkbox>
+        <mat-checkbox disabled="" [checked]="s.value.days.so">So</mat-checkbox>
+      </div>
     </div>
     }
-    <mat-checkbox>mehrmals täglich</mat-checkbox>
-    <mat-form-field>
-        <mat-label style="text-align: center; width: fit-content">Wie oft?</mat-label>
-        <input min="1" max="4" type="number" name="" id="" matInput />
+  </div>
+  <div class="weekdays-selection" formGroupName="weekdaysForm">
+    <span>Wählen Sie Wochentage und Uhrzeit aus.</span>
+    <span>
+      <mat-icon fontIcon="visibility"></mat-icon>
+      <mat-icon fontIcon="visibility_off"></mat-icon>
+      <mat-icon fontIcon="add_circle"></mat-icon>
+      <mat-icon fontIcon="remove_circle"></mat-icon>
+    </span>
+    <div class="weekdays" formGroupName="days">
+      <mat-checkbox formControlName="mo">Mo</mat-checkbox>
+      <mat-checkbox formControlName="di">Di</mat-checkbox>
+      <mat-checkbox formControlName="mi">Mi</mat-checkbox>
+      <mat-checkbox formControlName="do">Do</mat-checkbox>
+      <mat-checkbox formControlName="fr">Fr</mat-checkbox>
+      <mat-checkbox formControlName="sa">Sa</mat-checkbox>
+      <mat-checkbox formControlName="so">So</mat-checkbox>
+    </div>
+
+    <mat-checkbox #dailyCheckbox>täglich</mat-checkbox>
+    <div
+      class="schedule-timepicker-container"
+      [style.display]="showScheduleTimePicker() ? 'flex' : 'none'"
+    >
+      <app-timepicker
+        (done)="showScheduleConfirmation()"
+        formControlName="time"
+      ></app-timepicker>
+    </div>
+    @if(confirmSchedule() === true){
+    <app-overlay [background]="'var(--background-color)'">
+      <div class="confirm-schedule-container">
+        @if(weekdaysSelection?.errors?.['daySelected']){
+        <span>Bitte wählen Sie zunächst mindestens einen Wochentag aus</span>
+
+        } @else{ @if(createTodoForm.get("weekdaysForm")?.value!.days; as days){
+        <div class="schedule-confirmation-review">
+          <div class="selected-weekdays">
+            @for(day of Object.entries(days); track day[0]){
+            <div class="weekday-container">
+              <span>{{ day[0] }}: </span>
+              @if(day[1] === true){
+              <mat-icon fontIcon="check_box"></mat-icon>
+              } @else {
+              <mat-icon fontIcon="check_box_outline_blank"></mat-icon>
+              }
+            </div>
+            }
+          </div>
+          <span
+            >{{
+              (createTodoForm.get("weekdaysForm")?.get("time"))!.value
+            }}
+            Uhr</span
+          >
+        </div>
+        }
+
+        <div class="confirm">
+          <span>Bestätigen?</span>
+          <button class="confirm" (click)="onScheduleSelected()">
+            <span>ja</span>
+          </button>
+          <button class="abort" (click)="confirmSchedule.set(false)">
+            <span>zurück</span>
+          </button>
+        </div>
+        }
+      </div>
+    </app-overlay>
+    } @if(!showScheduleTimePicker() ) {
+    <mat-form-field
+      class="selected-schedule-time"
+      (click)="
+        !weekdaysSelection!.get('time')?.disabled &&
+          showScheduleTimePicker.set(true)
+      "
+    >
+      <mat-label>Uhrzeit</mat-label>
+      <input matInput formControlName="time" readonly="" />
     </mat-form-field>
-    <mat-radio-group>
-        <mat-radio-button>Täglich</mat-radio-button>
-        <mat-radio-button>Wöchentlich</mat-radio-button>
-        <mat-radio-button>Monatlich</mat-radio-button>
-    </mat-radio-group>
-    <!-- <mat-form-field>
+    }
+  </div>
+  }
+  <mat-form-field>
+    <mat-label style="text-align: center; width: fit-content"
+      >Wie oft?</mat-label
+    >
+    <input min="1" max="4" type="number" name="" id="" matInput />
+  </mat-form-field>
+  <mat-radio-group>
+    <mat-radio-button>Täglich</mat-radio-button>
+    <mat-radio-button>Wöchentlich</mat-radio-button>
+    <mat-radio-button>Monatlich</mat-radio-button>
+  </mat-radio-group>
+  <!-- <mat-form-field>
         <mat-label>wiederholen</mat-label>
     </mat-form-field> -->
 
-    <button mat-stroked-button color="primary" [disabled]="!createTodoForm.valid">
-        Todo erstellen
-    </button>
+  <button
+    [disabled]="showScheduleTimePicker() === true"
+    mat-stroked-button
+    color="primary"
+    [disabled]="!createTodoForm.valid"
+  >
+    Todo erstellen
+  </button>
 </form>
