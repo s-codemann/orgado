@@ -1,4 +1,13 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CardComponent } from '../../../core/layout/card/card.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CreateTodoComponent } from '../../todo/components/create-todo/create-todo.component';
@@ -15,12 +24,21 @@ import { TodosStore } from '../../todo/todo.store';
 import { TodoCardComponent } from '../../todo/components/todo-card/todo-card.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { OneOffTodoCardComponent } from '../../todo/components/todo-cards/one-off-todo-card/one-off-todo-card.component';
+import { RepeatableTodoCardComponent } from '../../todo/components/todo-cards/repeatable-todo-card/repeatable-todo-card.component';
+import { TodoOccuranceCardComponent } from '../../todo/components/todo-cards/todo-occurance-card/todo-occurance-card.component';
+import { TodoViewComponent } from '../../todo/components/todo-view/todo-view.component';
+import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home-screen',
   standalone: true,
   imports: [
     TodoCardComponent,
+    OneOffTodoCardComponent,
+    RepeatableTodoCardComponent,
+    TodoOccuranceCardComponent,
+    TodoViewComponent,
     CardComponent,
     CommonModule,
     // MatDialogModule,
@@ -31,18 +49,36 @@ import { toSignal } from '@angular/core/rxjs-interop';
     MatCardModule,
     MatIcon,
     DatePipe,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './home-screen.component.html',
   styleUrl: './home-screen.component.scss',
 })
-export class HomeScreenComponent implements OnInit {
+export class HomeScreenComponent implements OnInit, AfterViewInit, OnDestroy {
   overlayFadeOut = signal(false);
   showCreateTodo = signal(false);
   todosService = inject(TodosService);
   matDialog = inject(MatDialog);
   createTodoDialog!: MatDialogRef<CreateTodoComponent | undefined>;
+
   protected readonly authStore = inject(AuthStore);
   protected readonly todosStore = inject(TodosStore);
+
+  public todoCategorySelect = viewChild<NgModel>('viewCategoryControl');
+
+  trackSelectedCategoryEffect = effect(() => {
+    if (this.todoCategorySelect()) {
+      console.log('GOT CATEGORY MODEL: ', this.todoCategorySelect);
+      this.readSelectedCategory();
+      this.todoCategorySelect()?.valueChanges?.subscribe((v) =>
+        this.saveSelectedCategory(v)
+      );
+    }
+  });
+
+  public viewCategoryControl!: NgModel;
+  public viewCategory: string = 'due-tasks';
   // dialogRef =
   getTodos() {
     return this.todosService.getTodos().pipe(
@@ -92,6 +128,8 @@ export class HomeScreenComponent implements OnInit {
   ngOnInit(): void {
     this.todosStore.getTodos();
   }
+  ngAfterViewInit(): void {}
+  ngOnDestroy(): void {}
   fadeToBottom() {
     this.matDialog;
     // this.showCreateTodo.set(false);
@@ -104,5 +142,15 @@ export class HomeScreenComponent implements OnInit {
     this.todosService.deleteTodo(id).subscribe((v) => {
       this.todos$ = this.getTodos();
     });
+  }
+  readSelectedCategory() {
+    const viewCategorySaved = localStorage.getItem('todo_view_category');
+    if (viewCategorySaved) {
+      this.todoCategorySelect()?.control.setValue(viewCategorySaved);
+      // this.viewCategory = viewCategorySaved;
+    }
+  }
+  saveSelectedCategory(category: string) {
+    localStorage.setItem('todo_view_category', category);
   }
 }

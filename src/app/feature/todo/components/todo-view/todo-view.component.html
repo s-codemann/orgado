@@ -1,0 +1,40 @@
+@switch (displayKind()) { @case ("due-tasks") {
+<h2>Fällige Aufgaben</h2>
+<div class="todos-container">
+  @for(todo of $any(dueTasks()); track todo.occurance.id){
+  <!-- <span>{{ todo.occurance.due_at | date : "dd:MM HH:mm" }} Uhr</span> -->
+  @if(!todo.occurance.completed_at){
+  <app-todo-occurance-card [todoOccurance]="todo"></app-todo-occurance-card>
+  } }@empty {
+  <div class="all-completed-message">
+    <mat-icon fontIcon="check_circle"></mat-icon>
+    <span> alles erledigt!</span>
+  </div>
+  }
+</div>
+} @case("repeatable"){
+<h2>Wiederholende Aufgaben</h2>
+<div class="todos-container">
+  @for(todo of repeatableTodos();track todo.id){
+  <app-repeatable-todo-card [todo]="todo"></app-repeatable-todo-card>
+  }
+</div>
+} @case("one-off"){
+<h2>Einmalige Aufgaben</h2>
+<div class="todos-container">
+  @for(todo of oneOffTodos();track todo.id){
+  <app-one-off-todo-card [todo]="todo"></app-one-off-todo-card>
+  }
+</div>
+
+}@case("completed"){
+<h2>Erledigte Aufgaben</h2>
+<div class="todos-container">
+  @for(todo of $any(completedTasks()); track todo.occurance.id){
+  <app-todo-occurance-card
+    [todoOccurance]="todo"
+    [readonly]="true"
+  ></app-todo-occurance-card>
+  }
+</div>
+} }

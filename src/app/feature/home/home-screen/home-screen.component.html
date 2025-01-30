@@ -27,64 +27,36 @@
   </app-overlay>
 </div>
 } @else{
-<h2>Fällige Aufgaben</h2>
-@for(todo of $any(todos()); track todo.user.id){
-<span>{{ todo.occurance.due_at | date : "dd:MM HH:mm" }} Uhr</span>
-<!-- <app-todo-card [todo]="todo.todos"></app-todo-card> -->
-}
+<div class="todo-selection-container">
+  <select
+    class="category-select"
+    name=""
+    #viewCategoryControl="ngModel"
+    [(ngModel)]="viewCategory"
+    value="due-tasks"
+    id=""
+  >
+    <option value="due-tasks">Fällige Aufgaben</option>
+    <option value="repeatable">Wiederholende Aufgaben</option>
+    <option value="one-off">Einmalige Aufgaben</option>
+    <option value="completed">Erledigt</option>
+  </select>
+  <app-todo-view [displayKind]="viewCategory"></app-todo-view>
+</div>
 <div class="main-container todos">
-  <div class="one-off-todos-container">
+  <!-- <div class="one-off-todos-container">
     <h2>Einmalige Aufgaben</h2>
     @for (todo of todosStore.oneOffTodos() ; track todo.id;) {
-    <app-todo-card [todo]="todo"></app-todo-card>
-    <!-- <mat-card
-      class="todo-card"
-    >
-      <mat-card-header>
-        <mat-card-title>{{ todo.title }}</mat-card-title
-        >@if(todo.due_date){
-        <mat-card-subtitle>
-          {{ todo.due_date | date : "dd.MM.yyyy H:mm" }} Uhr</mat-card-subtitle
-        >
-        }
-      </mat-card-header>
+    <app-one-off-todo-card [todo]="todo"></app-one-off-todo-card>
 
-      <mat-card-content>{{ todo.description }}</mat-card-content>
-      <mat-card-footer
-        ><button (click)="deleteTodo(todo.id)" mat-button color="accent">
-          Erledigt
-        </button></mat-card-footer
-      > </mat-card
-    > -->
     }
   </div>
   <div class="repeatable-todos-container">
     <h2>Wiederholende Aufgaben</h2>
     @for (todo of todosStore.repeatableTodos() ; track todo.id) {
-    <app-todo-card [todo]="todo"></app-todo-card>
+    <app-repeatable-todo-card [todo]="todo"></app-repeatable-todo-card>
     }
-  </div>
-  <!-- @for (todo of todos$ | async; track $index) {
-  <mat-card class="todo-card">
-    <mat-card-header>
-      <mat-card-title>{{ todo.title }}</mat-card-title
-      >@if(todo.due_date){
-      <mat-card-subtitle>
-        {{ todo.due_date | date : "dd.MM.yyyy H:mm" }} Uhr</mat-card-subtitle
-      >
-      }
-    </mat-card-header>
-
-    <mat-card-content>{{ todo.description }}</mat-card-content>
-    <mat-card-footer
-      ><button (click)="deleteTodo(todo.id)" mat-button color="accent">
-        Erledigt
-      </button></mat-card-footer
-    >
-  </mat-card>
-  } @empty {
-  <span>Erstellen Sie eine Aufgabe.</span>
-  } -->
+  </div> -->
 </div>
 }
 

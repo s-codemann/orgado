@@ -19,9 +19,11 @@ import {
   FormArray,
   FormControl,
   FormGroup,
+  MinLengthValidator,
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
+  Validators,
 } from '@angular/forms';
 // import { MatDatePickerModule } from '@angular/material';
 import {
@@ -268,6 +270,12 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   oneWeekdaySelected: ValidatorFn = (control: AbstractControl) => {
+    const exisingSchedules = this.createTodoForm.get('schedules') as
+      | FormArray
+      | undefined;
+    if (exisingSchedules && exisingSchedules.length > 0) {
+      return null;
+    }
     const weekdaysSelection = control as FormGroup;
     const errors: ValidationErrors = new Object();
 
@@ -318,7 +326,10 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
         );
         this.createTodoForm.addControl(
           'schedules',
-          new FormArray(schedules.map((s: any) => new FormControl(s)))
+          new FormArray(
+            schedules.map((s: any) => new FormControl(s)),
+            [Validators.minLength(1), Validators.required]
+          )
         );
         this.addWeekdaysForm(this.createTodoForm);
       }
@@ -335,7 +346,10 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.createTodoForm
       .get('weekdaysForm')!
       .addValidators(this.oneWeekdaySelected);
-    this.createTodoForm.addControl('schedules', new FormArray([]));
+    this.createTodoForm.addControl(
+      'schedules',
+      new FormArray([], [Validators.minLength(1), Validators.required])
+    );
     this.weekdaysSelection!.valueChanges.pipe(
       takeUntil(this.todoRepeatableObs.pipe(filter((v) => v === false)))
     ).subscribe((v) => {
@@ -352,5 +366,12 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
     if (createTodoFormValue.repeatable) {
       return true;
     } else return false;
+  }
+  removeScheduleAt(formArrayIndex: number) {
+    console.log(this.createTodoForm, this.createTodoForm.valid);
+    this.schedules.removeAt(formArrayIndex);
+    this.schedules.updateValueAndValidity();
+    this.createTodoForm.updateValueAndValidity();
+    console.log(this.createTodoForm, this.createTodoForm.valid);
   }
 }

@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { environment } from '../../../environments/environment.development';
-import { Ttodo, TtodoCreate } from './model/todo.type';
+import { Ttodo, TtodoCreate, TTodoOccurance } from './model/todo.type';
 import { TTodo } from './todo.store';
 import { TCreateTodoForm } from './model/forms';
 
@@ -68,6 +68,27 @@ export class TodosService {
     });
   }
   getDueTodoOccurances() {
-    return this.http.get(environment.backendUrl + '/todo-occurances/due');
+    return this.http.get<TTodoOccurance[]>(
+      environment.backendUrl + '/todo-occurances/due'
+    );
+  }
+  getTodoOccurances() {
+    return this.http.get<TTodoOccurance[]>(
+      environment.backendUrl + '/todo-occurances'
+    );
+  }
+  getCompletedTasks() {
+    return this.http.get(environment.backendUrl + '/todo-occurances/completed');
+  }
+
+  markTodoOccuranceComplete(todoOccuranceId: number) {
+    return this.http.post(
+      environment.backendUrl +
+        '/todo-occurances/' +
+        todoOccuranceId +
+        '/complete',
+      {},
+      { withCredentials: true, observe: 'response', responseType: 'text' }
+    );
   }
 }

@@ -1,0 +1,20 @@
+@if(todo(); as todo){
+<mat-card [class.dueNow]="intervalDue()" class="todo-card">
+  <mat-card-header>
+    <mat-card-title>{{ todo.title }}</mat-card-title
+    >@if(todo.due_date && todo.due_date !== null){
+    <mat-card-subtitle>
+      Bis {{ todo.due_date | date : "dd.MM. H:mm" }} Uhr</mat-card-subtitle
+    >
+    }
+  </mat-card-header>
+
+  <mat-card-content>{{ todo.description }}</mat-card-content>
+  <mat-card-footer>
+    <button mat-button color="accent">Besprechen</button>
+    <button (click)="deleteTodo(todo.id)" mat-button color="accent">
+      Erledigt
+    </button>
+  </mat-card-footer>
+</mat-card>
+}

@@ -1,4 +1,10 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="createTodoForm">
+  <div class="reset-button">
+    <mat-icon
+      (click)="createTodoForm.reset()"
+      fontIcon="delete_forever"
+    ></mat-icon>
+  </div>
   <mat-form-field appearance="outline" spellcheck="false">
     <mat-label>Titel</mat-label>
     <input
@@ -56,7 +62,18 @@
   <div formArrayName="schedules" class="todo-schedules">
     @for(s of schedules.controls; track $index ){
     <div class="added-schedule-container">
-      Zeit: {{ s.value.time }}
+      <div class="added-schedule-header">
+        <span>Zeit: {{ s.value.time }}</span
+        ><span>
+          <div class="remove-schedule-icon">
+            <mat-icon
+              (click)="removeScheduleAt($index)"
+              fontIcon="remove_circle"
+            ></mat-icon>
+          </div>
+        </span>
+      </div>
+
       <div class="selected-weekdays">
         <mat-checkbox disabled="" [checked]="s.value.days.mo">Mo</mat-checkbox>
         <mat-checkbox disabled="" [checked]="s.value.days.di">Di</mat-checkbox>
@@ -67,6 +84,7 @@
         <mat-checkbox disabled="" [checked]="s.value.days.so">So</mat-checkbox>
       </div>
     </div>
+
     }
   </div>
   <div class="weekdays-selection" formGroupName="weekdaysForm">
@@ -128,10 +146,14 @@
 
         <div class="confirm">
           <span>Bestätigen?</span>
-          <button class="confirm" (click)="onScheduleSelected()">
+          <button type="button" class="confirm" (click)="onScheduleSelected()">
             <span>ja</span>
           </button>
-          <button class="abort" (click)="confirmSchedule.set(false)">
+          <button
+            type="button"
+            class="abort"
+            (click)="confirmSchedule.set(false)"
+          >
             <span>zurück</span>
           </button>
         </div>

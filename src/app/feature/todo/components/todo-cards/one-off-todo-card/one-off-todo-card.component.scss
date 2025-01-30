@@ -1,0 +1,43 @@
+:host {
+  min-width: 260px;
+}
+
+.todo-card {
+  width: 100%;
+  max-width: 300px;
+  min-height: 150px;
+  margin: 0 auto;
+  color: #7ca48a;
+
+  mat-card-footer {
+    margin-top: auto;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .next-due {
+    width: 100%;
+    white-space: nowrap;
+
+    .smaller {
+      font-size: smaller;
+    }
+  }
+}
+
+.dueNow {
+  animation: due_flash 1000ms;
+}
+
+@keyframes due_flash {
+  0% {
+    background-color: rgb(246, 255, 0);
+  }
+
+  70% {
+    background-color: rgba(246, 255, 0, 0.255);
+  }
+
+  100% {
+    background-color: #000;
+  }
+}

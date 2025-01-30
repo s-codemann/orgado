@@ -142,3 +142,30 @@ header {
   scrollbar-width: thin;
   scrollbar-color: var(--primary-900) var(--accent-900);
 }
+
+.todo-occurances-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.todo-selection-container {
+  width: 1300px;
+  height: 100vh;
+
+  .category-select {
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    border: 2px dashed var(--primary-900);
+    color: #fff;
+    border-radius: 6px;
+    margin: 1rem auto 2rem 0;
+    // margin-bottom: 2rem;
+    // margin-right: auto;
+
+    option {
+      color: #000;
+    }
+  }
+}
