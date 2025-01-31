@@ -1,4 +1,4 @@
-<table>
+<!-- <table>
   @for(timeFrameVal of timeFrameValues();track $index){
   <tr>
     <td>{{ timeFrameVal.timeStr }}</td>
@@ -9,4 +9,32 @@
     }
   </tr>
   }
-</table>
+</table> -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        @for(timeFrameVal of timeFrameValues();track $index){
+
+        <th>{{ timeFrameVal.timeStr }}</th>
+
+        }
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        @for(timeFrameVal of timeFrameValues();track $index){
+        <td>
+          <div class="tasks-container">
+            @for(todo of timeFrameVal.oneOffTodos;track todo.id){
+            {{ todo.title }}
+            } @for(todo of timeFrameVal.repeatableTodos;track todo.id){
+            <td style="background-color: palegoldenrod">{{ todo.title }}</td>
+            }
+          </div>
+        </td>
+        }
+      </tr>
+    </tbody>
+  </table>
+</div>
