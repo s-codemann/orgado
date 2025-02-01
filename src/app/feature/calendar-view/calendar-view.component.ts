@@ -11,11 +11,12 @@ import { CommonModule } from '@angular/common';
 import { CalendarService } from './calendar.service';
 import { TodosService } from '../todo/todos.service';
 import { TodosStore, TTodoWithNextDue } from '../todo/todo.store';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss',
 })
@@ -28,7 +29,7 @@ export class CalendarViewComponent implements OnInit {
   private readonly todosStore = inject(TodosStore);
   // todos = toSignal(this.todosService.getTodos(true));
   timeFrameScale = signal(1000 * 60 * 30);
-  displayTimeUnitsAmount = signal(24);
+  displayTimeUnitsAmount = signal(20);
   displayTimeFrame = signal(60 * 1000 * 60);
   timeFrameValues = computed(() => {
     const startDate = new Date();

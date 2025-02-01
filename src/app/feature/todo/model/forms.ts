@@ -32,3 +32,4 @@ const good: TCreateTodoForm = {
   weekdaysForm: new FormGroup({}),
   schedules: new FormArray([new FormControl(null)]),
 };
+export type TTodoForm = TCreateTodoForm & { userId?: number };

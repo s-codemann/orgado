@@ -11,6 +11,9 @@
   }
 </table> -->
 <div class="table-container">
+  <div class="settings-container">
+    <mat-icon fontIcon="settings_applications"></mat-icon>
+  </div>
   <table>
     <thead>
       <tr>
@@ -27,9 +30,13 @@
         <td>
           <div class="tasks-container">
             @for(todo of timeFrameVal.oneOffTodos;track todo.id){
-            {{ todo.title }}
+            <div class="todo repeatable">{{ todo.title }}</div>
             } @for(todo of timeFrameVal.repeatableTodos;track todo.id){
-            <td style="background-color: palegoldenrod">{{ todo.title }}</td>
+            <!-- <td style=""> -->
+            <div class="todo one-off">
+              <div class="title">{{ todo.title }}</div>
+            </div>
+            <!-- </td> -->
             }
           </div>
         </td>

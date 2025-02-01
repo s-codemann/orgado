@@ -7,6 +7,7 @@ import { LoginComponent } from './core/auth/login/login.component';
 import { isAuthenticatedGuard } from './core/auth/router/isAuthenticated.guards';
 import { inject } from '@angular/core';
 import { AuthStore } from './core/auth/store/auth.store';
+import { EditTodoComponent } from './feature/todo/components/edit-todo/edit-todo.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,7 @@ export const routes: Routes = [
     //     (x) => x.HomeScreenComponent
     //   ),
   },
+  { path: 'todos/:todo/edit', component: EditTodoComponent, outlet: 'overlay' },
   {
     path: 'calendar',
     component: CalendarViewComponent,

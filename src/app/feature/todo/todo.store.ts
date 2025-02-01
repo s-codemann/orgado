@@ -87,6 +87,7 @@ export const TodosStore = signalStore(
             : 1;
         });
       },
+      getTodo: (todoId: number) => {},
       updateAfterDue: (todo: TTodoWithSchedule) => {
         patchState(
           store,

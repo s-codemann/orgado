@@ -16,7 +16,10 @@
 <h2>Wiederholende Aufgaben</h2>
 <div class="todos-container">
   @for(todo of repeatableTodos();track todo.id){
-  <app-repeatable-todo-card [todo]="todo"></app-repeatable-todo-card>
+  <app-repeatable-todo-card
+    (edit)="edit($event)"
+    [todo]="todo"
+  ></app-repeatable-todo-card>
   }
 </div>
 } @case("one-off"){

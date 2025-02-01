@@ -41,3 +41,13 @@
     background-color: #000;
   }
 }
+
+.edit-btn {
+  right: 0;
+  opacity: 0.3;
+  transition: opacity 200ms;
+}
+
+:host:hover .edit-btn {
+  opacity: 1;
+}

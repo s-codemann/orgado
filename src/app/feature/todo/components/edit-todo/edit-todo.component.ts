@@ -1,14 +1,12 @@
 import {
   AfterViewInit,
   Component,
+  computed,
   effect,
-  ElementRef,
-  EventEmitter,
   inject,
-  OnDestroy,
+  input,
   OnInit,
   output,
-  Output,
   Signal,
   signal,
   viewChild,
@@ -19,39 +17,39 @@ import {
   FormArray,
   FormControl,
   FormGroup,
-  MinLengthValidator,
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-// import { MatDatePickerModule } from '@angular/material';
+import { MatButton } from '@angular/material/button';
+import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import {
   MatDatepicker,
   MatDatepickerModule,
 } from '@angular/material/datepicker';
-import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatButton } from '@angular/material/button';
+import { OverlayComponent } from '../../../../core/layout/common/overlay/overlay/overlay.component';
 import { TimepickerComponent } from '../../../../core/layout/common/timepicker/timepicker.component';
 import { TodosService } from '../../todos.service';
-import { TWeekDay } from '../../model/weekday';
+import { TodosStore, TTodo } from '../../todo.store';
 import {
+  toSignal,
   takeUntilDestroyed,
   toObservable,
-  toSignal,
 } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs';
-import { OverlayComponent } from '../../../../core/layout/common/overlay/overlay/overlay.component';
-import { MatIconModule } from '@angular/material/icon';
+import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
+import { map, distinctUntilChanged, takeUntil, filter } from 'rxjs';
+import { TCreateTodoForm, TTodoForm } from '../../model/forms';
+import { TWeekDay } from '../../model/weekday';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { JsonPipe } from '@angular/common';
-import { TCreateTodoForm } from '../../model/forms';
 
 @Component({
-  selector: 'app-create-todo',
+  selector: 'app-edit-todo',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -64,14 +62,49 @@ import { TCreateTodoForm } from '../../model/forms';
     MatRadioModule,
     OverlayComponent,
     MatIconModule,
+    JsonPipe,
   ],
   providers: [provideNativeDateAdapter()],
-  templateUrl: './create-todo.component.html',
-  styleUrl: './create-todo.component.scss',
+  templateUrl: './edit-todo.component.html',
+  styleUrl: './edit-todo.component.scss',
 })
-export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() created = new EventEmitter();
+export class EditTodoComponent implements OnInit, AfterViewInit {
+  controlsInEdit: WritableSignal<{
+    [K in keyof TTodoForm]: { editable: boolean; inEdit: boolean };
+  }> = signal({
+    description: { editable: true, inEdit: false },
+    repeatable: { editable: true, inEdit: false },
+    title: { editable: true, inEdit: false },
+    userId: { editable: true, inEdit: false },
+  });
+  dialogData = inject(MAT_DIALOG_DATA);
+  todo = input<TTodo>();
+  todoId: WritableSignal<number | undefined> = signal(undefined);
+  todoeff = effect(() => {
+    const todo = this.todo();
+  });
+  todoInEdit = computed(() => {
+    const todoId = this.todoId();
+    if (todoId) {
+      return this.todosStore.entityMap()[this.dialogData.todo];
+    } else return null;
+  });
+
+  setFormEffect = effect(() => {
+    const todoInEdit = this.todoInEdit();
+    if (todoInEdit) {
+      this.editTodoForm.get('title')?.setValue(todoInEdit.title);
+      this.editTodoForm.get('description')?.setValue(todoInEdit.description);
+      this.editTodoForm.get('repeatable')?.setValue(todoInEdit.repeatable);
+      // this.editTodoForm.disable();
+    }
+  });
+
   private todosService = inject(TodosService);
+  private todosStore = inject(TodosStore);
+  protected editTodoForm = this.todosService.generateEditTodoForm();
+  Object = Object;
+
   private dateAdapter = inject(DateAdapter);
   createTodoForm: FormGroup = this.todosService.generateCreateTodoForm();
   save = output();
@@ -80,7 +113,6 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
   get weekdaysSelection() {
     return this.createTodoForm.get('weekdaysForm');
   }
-  Object = Object;
   private previousWeekdaysSelection: WritableSignal<any> = signal(undefined);
   protected confirmSchedule = signal(false);
   private get allWeekdaysSelectedState() {
@@ -185,13 +217,30 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   });
   ngOnInit(): void {
+    console.log('DIALOG BEFOE');
+    console.log('DIALOG DATA: ', this.dialogData);
+    // this.dialogData;
+    if (this.dialogData) {
+      this.todoId.set(this.dialogData.todo);
+      console.log(
+        'SET TODO ID: ',
+        this.dialogData.todo,
+        this.todosStore.entityMap()[this.dialogData.todo]
+      );
+      this.todosStore.entities()[this.dialogData.todoId];
+    }
     this.dateAdapter.setLocale('de');
     this.checkSavedCreateTodoFormState();
     const c = new FormArray<any>([new FormControl()]);
     c.setValue([new FormControl(2)]);
     console.log('ARRAY', c);
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    console.log('CONTROLS', this.editTodoForm.controls);
+    for (let control in this.editTodoForm.controls) {
+      const current = this.editTodoForm.get(control);
+    }
+  }
   onSubmit() {
     console.log('VAL:', this.createTodoForm.value);
     // return;
@@ -234,7 +283,6 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
           v;
           localStorage.removeItem('create_todo_form');
           this.saveCreateTodoFormState = false;
-          this.created.emit(v);
         });
     }
   }
@@ -365,5 +413,10 @@ export class CreateTodoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.schedules.removeAt(formArrayIndex);
     this.schedules.updateValueAndValidity();
     this.createTodoForm.updateValueAndValidity();
+  }
+  doEdit(controlName: keyof TTodoForm) {
+    const current = this.controlsInEdit();
+    current[controlName].inEdit = true;
+    this.controlsInEdit.set(current);
   }
 }

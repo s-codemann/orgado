@@ -13,11 +13,11 @@
   <mat-card-content>{{ todo.description }}</mat-card-content>
   <!-- <mat-card-actions><button mat-button color="accent">Erledigt</button></mat-card-actions> -->
   <mat-card-footer>
-    <button mat-button color="accent">Besprechen</button>
+    <!-- <button mat-button color="accent">Besprechen</button>
     <button (click)="deleteTodo(todo.id)" mat-button color="accent">
       Erledigt
-    </button>
-    @if(todo.repeatable){
+    </button> -->
+    <!-- @if(todo.repeatable){
     <button mat-button color="accent">Rhythmus</button>
     <span class="next-due"
       ><span class="smaller">Nächster Termin:</span>
@@ -26,7 +26,15 @@
           | date : "dd.MM. - HH:mm 'Uhr'"
       }}</span
     >
-    }
+    } -->
+    <button
+      (click)="edit.emit(todo.id)"
+      class="edit-btn"
+      mat-button
+      color="accent"
+    >
+      <mat-icon fontIcon="edit"></mat-icon>
+    </button>
   </mat-card-footer>
 </mat-card>
 }

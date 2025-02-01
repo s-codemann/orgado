@@ -53,6 +53,19 @@ export class TodosService {
     });
     return todosForm;
   }
+  generateEditTodoForm() {
+    const editForm = this.fb.group({
+      title: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
+      description: new FormControl('', [Validators.minLength(2)]),
+      due_date: new FormControl('', []),
+      due_time: new FormControl('', []),
+      repeatable: new FormControl(false),
+    });
+    return editForm;
+  }
   getWeekdaysGroup() {
     return new FormGroup({
       time: new FormControl('', [Validators.required]),

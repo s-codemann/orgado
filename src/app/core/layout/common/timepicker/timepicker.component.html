@@ -71,7 +71,7 @@
     <mat-icon fontIcon="delete"></mat-icon>
   </button>
   <button
-    [disabled]="disabledSig()"
+    [disabled]="disabledSig() || (this.ngControl && this.ngControl.invalid)"
     color="accent"
     mat-mini-fab
     type="button"

@@ -1,17 +1,21 @@
-<!-- <h3 style="text-align: center; padding: 1rem 0 0; color: var(--primary-500)">
-  Aufgabe erstellen
-</h3> -->
-<form (ngSubmit)="onSubmit()" [formGroup]="createTodoForm">
+<form (ngSubmit)="onSubmit()" [formGroup]="editTodoForm">
   <div class="reset-button">
     <mat-icon
-      (click)="createTodoForm.reset()"
+      (click)="editTodoForm.reset()"
       fontIcon="delete_forever"
     ></mat-icon>
   </div>
-  <h4>Aufgabe erstellen</h4>
+  <h4>Aufgabe bearbeiten</h4>
+
   <mat-form-field appearance="outline" spellcheck="false">
+    @if(controlsInEdit().title.editable && !controlsInEdit().title.inEdit){
+    <div (click)="doEdit('title')" class="edit-icon">
+      <mat-icon fontIcon="edit"></mat-icon>
+    </div>
+    }
     <mat-label>Titel</mat-label>
     <input
+      [readonly]="!controlsInEdit().title.inEdit"
       matInput
       formControlName="title"
       type="text"
@@ -47,7 +51,7 @@
       <input
         (focus)="showTimepicker.set(true)"
         matInput
-        [value]="createTodoForm.get('due_time')?.value"
+        [value]="editTodoForm.get('due_time')?.value"
         readonly="true"
       />
     </mat-form-field>
@@ -154,7 +158,7 @@
     [disabled]="showScheduleTimePicker() === true"
     mat-stroked-button
     color="primary"
-    [disabled]="!createTodoForm.valid"
+    [disabled]="!editTodoForm.valid"
   >
     Todo erstellen
   </button>

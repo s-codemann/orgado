@@ -11,8 +11,17 @@ import {
   signal,
   WritableSignal,
   EventEmitter,
+  inject,
+  OnChanges,
+  SimpleChanges,
+  SkipSelf,
+  Injector,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+} from '@angular/forms';
 import {
   MatButton,
   MatFabButton,
@@ -45,14 +54,20 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './timepicker.component.html',
   styleUrl: './timepicker.component.scss',
 })
-export class TimepickerComponent implements ControlValueAccessor {
+export class TimepickerComponent implements ControlValueAccessor, OnInit {
   @Output() done = new EventEmitter();
+  ngOnInit() {
+    const control = this._injector.get(NgControl);
+    this.ngControl = control;
+  }
+  private _injector = inject(Injector);
+  ngControl?: NgControl;
+
   startHours = input(new Date().getHours());
   startMins = input(new Date().getMinutes());
   width = input('100%');
   minutesStep = input(5);
 
-  // nullStr = "--:--"
   disabledSig = signal(false);
   hours = signal<number | null>(null);
   hoursStr = computed(() => this.toTimeString(this.hours()));
