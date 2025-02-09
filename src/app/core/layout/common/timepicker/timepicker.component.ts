@@ -36,14 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-timepicker',
   standalone: true,
-  imports: [
-    MatFormField,
-    MatInput,
-    MatButton,
-    MatIconModule,
-    MatFabButton,
-    MatMiniFabButton,
-  ],
+  imports: [MatFormField, MatInput, MatButton, MatIconModule, MatMiniFabButton],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -56,12 +49,25 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TimepickerComponent implements ControlValueAccessor, OnInit {
   @Output() done = new EventEmitter();
+  inDisplayMode = input<boolean>();
   ngOnInit() {
     const control = this._injector.get(NgControl);
     this.ngControl = control;
   }
   private _injector = inject(Injector);
   ngControl?: NgControl;
+
+  setDisplayModeEffect = effect(
+    () => {
+      if (this.inDisplayMode() !== undefined) {
+        this.displayMode.set(this.inDisplayMode());
+      }
+    },
+    { allowSignalWrites: true }
+  );
+
+  // displayMode = signal(this.initialDisplayMode());
+  displayMode = signal(false);
 
   startHours = input(new Date().getHours());
   startMins = input(new Date().getMinutes());
@@ -162,6 +168,10 @@ export class TimepickerComponent implements ControlValueAccessor, OnInit {
     // this.onChange(this.timeStr());
     if (this.disabledSig()) return;
     this.done.emit();
+    this.displayMode.set(true);
+  }
+  enableEdit() {
+    this.displayMode.set(false);
   }
   setNull() {
     this.minutes.set(null);
@@ -175,6 +185,7 @@ export class TimepickerComponent implements ControlValueAccessor, OnInit {
     } else this.addHours();
   }
   wheelMinutes(ev: WheelEvent) {
+    ev.stopPropagation();
     console.log('hi scroll', ev);
     if (ev.deltaY > 0) {
       this.decMinutes();

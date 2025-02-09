@@ -107,4 +107,8 @@ export class CalendarViewComponent implements OnInit {
       this.todosStore.getTodos();
     }
   }
+
+  viewTodo(todoId: number) {
+    this.todosService.startEditDialog(todoId);
+  }
 }

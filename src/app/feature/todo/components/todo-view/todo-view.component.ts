@@ -19,6 +19,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditTodoComponent } from '../edit-todo/edit-todo.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { CreateTodoComponent } from '../create-todo/create-todo.component';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-todo-view',
@@ -67,8 +68,21 @@ export class TodoViewComponent implements OnInit {
         todo: todoId,
       },
     });
-    // this.editTodoDialog.componentInstance.
-
-    // this.editTodoDialog.componentInstance!.todo);
+    this.editTodoDialog.componentInstance?.todoDeleted.subscribe((v) => {
+      this.todoDeleted(v);
+    });
+  }
+  todoDeleted(todoId: number) {
+    console.log('TODO DELETED');
+    this.editTodoDialog
+      ?.afterClosed()
+      .pipe(first())
+      .subscribe(() => {
+        setTimeout(() => {
+          this.todosStore.removeTodo(todoId);
+          alert('TODO GELÖSCHT');
+        }, 500);
+      });
+    this.editTodoDialog.close();
   }
 }

@@ -1,0 +1,155 @@
+<form [formGroup]="cronForm" [class.stop-scroll]="stopScroll()">
+  <div class="time group">
+    <h4>Uhrzeit</h4>
+    <app-timepicker
+      [inDisplayMode]="true"
+      (mouseenter)="stop()"
+      formControlName="time"
+    ></app-timepicker>
+    <!-- <input type="text" formControlName="time" /> -->
+    <!-- app-timepick -->
+  </div>
+  <div class="weekdays group">
+    <h4>Wochentag</h4>
+    <mat-radio-group formControlName="setWeekdays">
+      <mat-radio-button value="false">Nicht beschränken</mat-radio-button>
+      <mat-radio-button value="true">festlegen</mat-radio-button>
+    </mat-radio-group>
+    @if(cronForm.get("setWeekdays")!.value === "true"){
+    <div formArrayName="weekdays" class="weekdays-group-container">
+      @for(wd of weekdays.controls;let weekdaysI = $index;track wd){
+      <div class="add-group" [formGroupName]="$index">
+        <div class="weekdays-selection">
+          @for(day of weekdaysData;track day.number){
+          <div
+            class="weekday"
+            [class.selected]="
+              weekdays.at(weekdaysI).get(day.name)!.value === true
+            "
+          >
+            <span class="label">
+              {{ day.name }}
+            </span>
+            <mat-checkbox [formControlName]="day.name"></mat-checkbox>
+            <!-- <input type="checkbox" [formControlName]="day.name" class="weekday" /> -->
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  <!-- <mat-checkbox>Wochentag</mat-checkbox> -->
+  <div class="months group">
+    <h4 (click)="toCronString(cronForm.value)">Monate</h4>
+    <mat-radio-group formControlName="setMonths">
+      <mat-radio-button value="false">Nicht beschränken</mat-radio-button>
+      <mat-radio-button value="true">festlegen</mat-radio-button>
+    </mat-radio-group>
+    @if(cronForm.get("setMonths")?.value === "true"){
+
+    <div formArrayName="months" class="months-group-container">
+      @for(month of months.controls;let monthsI = $index;track month){
+      <div class="add-group" [formGroupName]="monthsI">
+        <div class="months-selection">
+          @for(mo of monthsData;let j = $index;track mo.number){
+          <div
+            [class.selected]="months.at(monthsI).get(mo.name)!.value === true"
+            class="month"
+          >
+            <span class="label">
+              {{ mo.name }}
+            </span>
+            <mat-checkbox [formControlName]="mo.name"></mat-checkbox>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  <div class="days-of-month group">
+    <h4>Tage des Monats</h4>
+    <mat-radio-group formControlName="setDaysOfMonth">
+      <mat-radio-button value="false">Nicht beschränken</mat-radio-button>
+      <mat-radio-button value="true">festlegen</mat-radio-button>
+    </mat-radio-group>
+    @if(cronForm.get("setDaysOfMonth")!.value === "true"){
+    <div class="add-btns">
+      <button
+        (click)="addDaysOfMonthGroup('span')"
+        mat-fab
+        extended
+        class="span"
+      >
+        <mat-icon fontIcon="add_circle"></mat-icon>
+        Spanne
+      </button>
+      <button
+        (click)="addDaysOfMonthGroup('single')"
+        mat-fab
+        extended
+        class="single"
+      >
+        <mat-icon fontIcon="add_circle"></mat-icon>
+        Einzeln
+      </button>
+    </div>
+    <div class="days-of-month" formArrayName="daysOfMonth">
+      @for(dom of daysOfMonth.controls;track dom){
+      <div [formGroupName]="$index" class="days-of-month-group-container">
+        <!-- @if(!(daysOfMonth.at($index).get("start")!.value ===
+        daysOfMonth.at($index).get("end")!.value)){ -->
+        @if(daysOfMonth.at($index).get("type")!.value === "span"){
+        <div class="day-range start">
+          <div class="day-range end">
+            <label for="range-start">Vom</label>
+            <div class="range-input-group">
+              <input
+                type="number"
+                name=""
+                matInput
+                formControlName="start"
+                id="range-start"
+              />
+              <span class="dot">.</span>
+            </div>
+          </div>
+        </div>
+        <span class="dash">-</span>
+        <div class="day-range end">
+          <label for="range-end">Bis</label>
+          <div class="range-input-group">
+            <input
+              type="number"
+              name=""
+              matInput
+              formControlName="end"
+              id="range-end"
+            />
+            <span class="dot">.</span>
+          </div>
+        </div>
+        } @else {
+        <div class="day-range end">
+          <label for="single-day">Am</label>
+          <div class="range-input-group">
+            <input
+              type="number"
+              name=""
+              id="single-day"
+              matInput
+              formControlName="end"
+            />
+            <span class="dot">.</span>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+</form>

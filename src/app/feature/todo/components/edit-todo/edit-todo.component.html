@@ -1,21 +1,39 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="editTodoForm">
-  <div class="reset-button">
-    <mat-icon
-      (click)="editTodoForm.reset()"
-      fontIcon="delete_forever"
-    ></mat-icon>
+  <div class="buttons-bar">
+    <button
+      type="button"
+      (click)="resetChanges()"
+      mat-mini-fab
+      aria-label="Änderungen verwerfen"
+      title="Änderungen verwerfen"
+    >
+      <mat-icon fontIcon="undo"></mat-icon>
+    </button>
+    <button
+      type="button"
+      (click)="deleteTodo(todoInEdit()!.id)"
+      mat-mini-fab
+      aria-label="Aufgabe löschen"
+      title="Aufgabe löschen"
+    >
+      <mat-icon fontIcon="delete_forever"></mat-icon>
+    </button>
   </div>
   <h4>Aufgabe bearbeiten</h4>
-
   <mat-form-field appearance="outline" spellcheck="false">
-    @if(controlsInEdit().title.editable && !controlsInEdit().title.inEdit){
+    @if(controlsInEdit().title.editable ){ @if(!controlsInEdit().title.inEdit){
     <div (click)="doEdit('title')" class="edit-icon">
       <mat-icon fontIcon="edit"></mat-icon>
     </div>
-    }
+    } @else {
+    <div class="edit-icon">
+      <mat-icon (click)="undo('title')" fontIcon="undo"></mat-icon>
+      <mat-icon (click)="confirm('title')" fontIcon="check_circle"></mat-icon>
+    </div>
+    } }
     <mat-label>Titel</mat-label>
     <input
-      [readonly]="!controlsInEdit().title.inEdit"
+      [appReadonlyControl]="controlsInEdit()"
       matInput
       formControlName="title"
       type="text"
@@ -23,22 +41,59 @@
       id="title"
     />
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="outline">
+    @if(controlsInEdit().description.editable ){
+    @if(!controlsInEdit().description.inEdit){
+    <div (click)="doEdit('description')" class="edit-icon">
+      <mat-icon fontIcon="edit"></mat-icon>
+    </div>
+    } @else {
+    <div class="edit-icon">
+      <mat-icon (click)="undo('description')" fontIcon="undo"></mat-icon>
+      <mat-icon
+        (click)="confirm('description')"
+        fontIcon="check_circle"
+      ></mat-icon>
+    </div>
+    } }
     <mat-label>Beschreibung</mat-label>
     <textarea
       matInput
+      [appReadonlyControl]="controlsInEdit()"
       formControlName="description"
       type="text"
       name="desc"
       id="description"
     ></textarea>
   </mat-form-field>
-
-  <mat-checkbox formControlName="repeatable">wiederholen</mat-checkbox>
-  @if(!todoRepeatable()){
+  @if(todoInEdit()?.repeatable){
+  <!-- <mat-checkbox readonly formControlName="repeatable">wiederholen</mat-checkbox> -->
+  <div class="is-repeatable">wiederholende Aufgabe</div>
+  } @else { nicht wiederholende Aufgabe } @if(!todoRepeatable()){
   <mat-form-field appearance="outline">
+    @if(controlsInEdit().due_date.editable ){
+    @if(!controlsInEdit().due_date.inEdit){
+    <div (click)="doEdit('due_date')" class="edit-icon">
+      <mat-icon fontIcon="edit"></mat-icon>
+    </div>
+    } @else {
+    <div class="edit-icon">
+      <mat-icon (click)="undo('due_date')" fontIcon="undo"></mat-icon>
+      <mat-icon
+        (click)="confirm('due_date')"
+        fontIcon="check_circle"
+      ></mat-icon>
+    </div>
+    } }
     <mat-label>Fällig</mat-label>
-    <input formControlName="due_date" matInput [matDatepicker]="dueDateDp" />
+
+    <input
+      formControlName="due_date"
+      [appReadonlyControl]="controlsInEdit()"
+      matInput
+      [matDatepicker]="dueDateDp"
+    />
+
     <mat-datepicker #dueDateDp></mat-datepicker>
     <mat-datepicker-toggle
       matIconSuffix
@@ -67,8 +122,26 @@
     </div>
   </div>
   } @if(todoRepeatable()){
+  <div class="cron-tabs-container">
+    @for(tab of tabs();track tab){
+    <button
+      class="cron-tab"
+      [class.active]="tab === selectedCronTab()"
+      (click)="selectedCronTab.set(tab)"
+    >
+      {{ tab }}
+    </button>
+    }
+  </div>
+  @for(schedule of $any(todoInEdit()).repeatableTodoSchedules;track
+  schedule.id){
+  <app-cron-input
+    [style.display]="selectedCronTab() === $index + 1 ? 'inline' : 'none'"
+    [cronString]="schedule.cron_schedule"
+  ></app-cron-input>
+  }
   <div formArrayName="schedules" class="todo-schedules">
-    @for(s of schedules.controls; track $index ){
+    <!-- @for(s of schedules.controls; track $index ){
     <div class="added-schedule-container">
       <div class="added-schedule-header">
         <span>Zeit: {{ s.value.time }}</span
@@ -93,9 +166,9 @@
       </div>
     </div>
 
-    }
+    } -->
   </div>
-  <div class="weekdays-selection" formGroupName="weekdaysForm">
+  <!-- <div class="weekdays-selection" formGroupName="weekdaysForm">
     <span>Wählen Sie Wochentage und Uhrzeit aus.</span>
 
     <div class="weekdays" formGroupName="days">
@@ -132,7 +205,6 @@
     <mat-form-field
       class="selected-schedule-time"
       (click)="
-        !weekdaysSelection!.get('time')?.disabled &&
           showScheduleTimePicker.set(true)
       "
     >
@@ -140,19 +212,31 @@
       <input matInput formControlName="time" readonly="" />
     </mat-form-field>
     }
-  </div>
+  </div> -->
   }
-  <mat-form-field>
-    <mat-label style="text-align: center; width: fit-content"
-      >Wie oft?</mat-label
-    >
-    <input min="1" max="4" type="number" name="" id="" matInput />
-  </mat-form-field>
-  <mat-radio-group>
-    <mat-radio-button>Täglich</mat-radio-button>
-    <mat-radio-button>Wöchentlich</mat-radio-button>
-    <mat-radio-button>Monatlich</mat-radio-button>
-  </mat-radio-group>
+  <div class="timestamps">
+    <div class="created-at">
+      <span>Erstellt am:</span>
+      <span>
+        {{ todoInEdit()?.created_at | date : "dd.MM.yyyy HH:mm" }} Uhr</span
+      >
+    </div>
+    <div class="updated_at">
+      <span>Zuletzt bearbeitet:</span>
+      <span>
+        {{ todoInEdit()?.updated_at | date : "dd.MM.yyyy HH:mm" }} Uhr</span
+      >
+    </div>
+  </div>
+  <!-- <mat-form-field>
+        <mat-label style="text-align: center; width: fit-content">Wie oft?</mat-label>
+        <input min="1" max="4" type="number" name="" id="" matInput />
+    </mat-form-field>
+    <mat-radio-group>
+        <mat-radio-button>Täglich</mat-radio-button>
+        <mat-radio-button>Wöchentlich</mat-radio-button>
+        <mat-radio-button>Monatlich</mat-radio-button>
+    </mat-radio-group> -->
 
   <button
     [disabled]="showScheduleTimePicker() === true"
@@ -160,6 +244,6 @@
     color="primary"
     [disabled]="!editTodoForm.valid"
   >
-    Todo erstellen
+    Änderungen speichern
   </button>
 </form>

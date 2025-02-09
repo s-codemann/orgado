@@ -30,7 +30,9 @@
         <td>
           <div class="tasks-container">
             @for(todo of timeFrameVal.oneOffTodos;track todo.id){
-            <div class="todo repeatable">{{ todo.title }}</div>
+            <div (click)="viewTodo(todo.id)" class="todo repeatable">
+              {{ todo.title }}
+            </div>
             } @for(todo of timeFrameVal.repeatableTodos;track todo.id){
             <!-- <td style=""> -->
             <div class="todo one-off">

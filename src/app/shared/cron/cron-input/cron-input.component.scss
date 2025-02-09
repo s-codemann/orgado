@@ -1,0 +1,129 @@
+form {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  background-color: rgba(95, 158, 160, 0.133);
+  border-radius: 0.75rem;
+  gap: 1rem;
+
+  .group {
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid white;
+  }
+
+  h4 {
+    color: #fff;
+  }
+}
+
+.weekdays-selection {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .weekday {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0.5rem;
+
+    transition: background-color 500ms;
+
+    .label {
+      position: relative;
+      top: 0.5rem;
+    }
+  }
+}
+
+.months-selection {
+  color: #fff;
+  // display: flex;
+  // align-items: center;
+  // justify-content: space-between;
+  // flex-wrap: wrap;
+  // justify-content: space-evenly;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(4, 1fr);
+
+  .month {
+    transition: background-color 500ms;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0.5rem;
+
+    .label {
+      position: relative;
+      top: 0.5rem;
+    }
+  }
+}
+
+.selected {
+  background-color: #ffffff44;
+}
+
+.days-of-month-group-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+  border-bottom: 2px dashed #ffffff56;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+
+  mat-form-field {
+    max-width: 20%;
+  }
+
+  .dash {
+    font-weight: 900;
+  }
+
+  .range-input-group {
+    margin-bottom: 0.5rem;
+    display: flex;
+    padding: 0.5rem;
+    box-shadow: 0 0 2px 1px #ffffff49;
+    border-radius: 0.5rem;
+    transition: box-shadow 400ms;
+
+    &:focus-within {
+      box-shadow: 0 0 6px 4px #ffffff6e;
+    }
+
+    input {
+      border: none;
+      background-color: transparent;
+      max-width: 3rem;
+      text-align: center;
+      color: #fff;
+      outline: none;
+    }
+
+    .dot {
+      font-weight: 900;
+      margin-left: 0.25rem;
+    }
+  }
+}
+
+.stop-scroll {
+  overflow-y: hidden;
+}
+
+.add-btns {
+  padding: 0.75rem 0 1.25rem;
+  display: flex;
+  gap: 1rem;
+
+  button {
+    max-height: 2rem;
+  }
+}

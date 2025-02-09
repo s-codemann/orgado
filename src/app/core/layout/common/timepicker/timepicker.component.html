@@ -1,3 +1,4 @@
+@if(!displayMode()){
 <div class="picker-container">
   <div class="hours time-container">
     <button
@@ -17,6 +18,7 @@
         name=""
         id=""
         class="hours-value"
+        (scroll)="$event.stopImmediatePropagation()"
       />
     </mat-form-field>
     <button
@@ -40,7 +42,11 @@
     >
       +
     </button>
-    <mat-form-field (wheel)="wheelMinutes($event)" subscriptSizing="dynamic">
+    <mat-form-field
+      (wheel)="wheelMinutes($event)"
+      (scroll)="$event.stopImmediatePropagation()"
+      subscriptSizing="dynamic"
+    >
       <input
         matInput
         [value]="minsStr()"
@@ -81,3 +87,13 @@
     <mat-icon fontIcon="done"></mat-icon>
   </button>
 </div>
+} @else{
+<div class="display-container">
+  <div class="enable">
+    <span>{{ timeStr() }} Uhr</span>
+    <button class="enable-btn" (click)="enableEdit()">
+      <mat-icon fontIcon="edit">Bearbeiten</mat-icon>
+    </button>
+  </div>
+</div>
+}

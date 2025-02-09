@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -8,8 +8,11 @@ import {
 } from '@angular/forms';
 import { environment } from '../../../environments/environment.development';
 import { Ttodo, TtodoCreate, TTodoOccurance } from './model/todo.type';
-import { TTodo } from './todo.store';
+import { TodosStore, TTodo } from './todo.store';
 import { TCreateTodoForm } from './model/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -30,9 +33,9 @@ export class TodosService {
   createTodo(todo: TtodoCreate) {
     return this.http.post(environment.backendUrl + '/todos', todo);
   }
-  deleteTodo(todoId: number) {
-    return this.http.delete(environment.backendUrl + '/todos?id=' + todoId);
-  }
+  // deleteTodo(todoId: number) {
+  //   return this.http.delete(environment.backendUrl + '/todos?id=' + todoId);
+  // }
   setTodoSchedule(todoId: number, schedule: string) {
     return this.http.post(
       environment.backendUrl + '/todos/' + todoId + '/schedule',
@@ -103,5 +106,44 @@ export class TodosService {
       {},
       { withCredentials: true, observe: 'response', responseType: 'text' }
     );
+  }
+
+  updateTodo(todo: Partial<TTodo> & { id: number }) {
+    return this.http.put(environment.backendUrl + '/todos/' + todo.id, todo);
+  }
+  deleteTodo(todoId: number) {
+    return this.http.delete(environment.backendUrl + '/todos/' + todoId);
+  }
+  editTodoDialog?: MatDialogRef<EditTodoComponent>;
+  matDialog = inject(MatDialog);
+  startEditDialog(todoId: number) {
+    console.log(todoId);
+    this.editTodoDialog = this.matDialog.open(EditTodoComponent, {
+      width: '85%',
+      height: '80%',
+      panelClass: 'mat-dialog-panel',
+      backdropClass: 'mat-dialog-backdrop',
+      closeOnNavigation: true,
+      data: {
+        todo: todoId,
+      },
+    });
+    this.editTodoDialog.componentInstance?.todoDeleted.subscribe((v) => {
+      this.todoDeleted(v);
+    });
+  }
+  todosStore = inject(TodosStore);
+  todoDeleted(todoId: number) {
+    console.log('TODO DELETED');
+    this.editTodoDialog
+      ?.afterClosed()
+      .pipe(first())
+      .subscribe(() => {
+        setTimeout(() => {
+          this.todosStore.removeTodo(todoId);
+          alert('TODO GELÖSCHT');
+        }, 500);
+      });
+    this.editTodoDialog?.close();
   }
 }

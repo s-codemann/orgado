@@ -9,6 +9,7 @@ import {
 import {
   addEntity,
   EntityId,
+  removeEntity,
   setEntities,
   updateEntity,
   withEntities,
@@ -101,6 +102,9 @@ export const TodosStore = signalStore(
             },
           })
         );
+      },
+      removeTodo: (todoId: number) => {
+        patchState(store, removeEntity(todoId));
       },
     };
   }),

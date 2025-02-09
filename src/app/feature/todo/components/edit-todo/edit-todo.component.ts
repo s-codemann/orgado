@@ -9,6 +9,7 @@ import {
   output,
   Signal,
   signal,
+  untracked,
   viewChild,
   WritableSignal,
 } from '@angular/core';
@@ -22,7 +23,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import {
+  MatButton,
+  MatFabButton,
+  MatMiniFabButton,
+} from '@angular/material/button';
 import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import {
   MatDatepicker,
@@ -42,11 +47,20 @@ import {
   toObservable,
 } from '@angular/core/rxjs-interop';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
-import { map, distinctUntilChanged, takeUntil, filter } from 'rxjs';
+import {
+  map,
+  distinctUntilChanged,
+  takeUntil,
+  filter,
+  catchError,
+  of,
+} from 'rxjs';
 import { TCreateTodoForm, TTodoForm } from '../../model/forms';
 import { TWeekDay } from '../../model/weekday';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { JsonPipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
+import { ReadonlyControlDirective } from '../../../../shared/directives/readonly-control.directive';
+import { CronInputComponent } from '../../../../shared/cron/cron-input/cron-input.component';
 
 @Component({
   selector: 'app-edit-todo',
@@ -57,18 +71,33 @@ import { JsonPipe } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatButton,
+    MatFabButton,
+    MatMiniFabButton,
     MatCheckboxModule,
     TimepickerComponent,
     MatRadioModule,
-    OverlayComponent,
     MatIconModule,
-    JsonPipe,
+    CronInputComponent,
+    ReadonlyControlDirective,
+    DatePipe,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './edit-todo.component.html',
   styleUrl: './edit-todo.component.scss',
 })
 export class EditTodoComponent implements OnInit, AfterViewInit {
+  selectedCronTab = signal(1);
+  tabs = computed(() => {
+    if (!this.todoInEdit()) {
+      return [];
+    }
+    //@ts-ignore
+    return this.todoInEdit()?.repeatableTodoSchedules.map(
+      //@ts-ignore
+      (schedule, index) => index + 1
+    );
+  });
+  todoDeleted = output<number>();
   controlsInEdit: WritableSignal<{
     [K in keyof TTodoForm]: { editable: boolean; inEdit: boolean };
   }> = signal({
@@ -76,6 +105,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
     repeatable: { editable: true, inEdit: false },
     title: { editable: true, inEdit: false },
     userId: { editable: true, inEdit: false },
+    due_date: { editable: true, inEdit: false },
   });
   dialogData = inject(MAT_DIALOG_DATA);
   todo = input<TTodo>();
@@ -89,20 +119,32 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
       return this.todosStore.entityMap()[this.dialogData.todo];
     } else return null;
   });
-
-  setFormEffect = effect(() => {
-    const todoInEdit = this.todoInEdit();
-    if (todoInEdit) {
-      this.editTodoForm.get('title')?.setValue(todoInEdit.title);
-      this.editTodoForm.get('description')?.setValue(todoInEdit.description);
-      this.editTodoForm.get('repeatable')?.setValue(todoInEdit.repeatable);
-      // this.editTodoForm.disable();
-    }
-  });
+  lastValue = signal<TTodoForm | undefined>(undefined);
+  setFormEffect = effect(
+    () => {
+      // untracked(() => {
+      //   if (!this.lastValue()) {
+      //     this.lastValue.set(this.editTodoForm.getR);
+      //   }
+      // });
+      const todoInEdit = this.todoInEdit();
+      if (todoInEdit) {
+        this.editTodoForm.get('title')?.setValue(todoInEdit.title);
+        this.editTodoForm.get('description')?.setValue(todoInEdit.description);
+        this.editTodoForm.get('repeatable')?.setValue(todoInEdit.repeatable);
+        console.log('TODOINEDIT: ', todoInEdit);
+        // this.editTodoForm.get('repeatable')?.disable({ onlySelf: true });
+        this.lastValue.set(this.editTodoForm.value as TTodoForm);
+        // this.editTodoForm.disable();
+      }
+    },
+    { allowSignalWrites: true }
+  );
 
   private todosService = inject(TodosService);
   private todosStore = inject(TodosStore);
-  protected editTodoForm = this.todosService.generateEditTodoForm();
+  protected editTodoForm: FormGroup<any> =
+    this.todosService.generateEditTodoForm();
   Object = Object;
 
   private dateAdapter = inject(DateAdapter);
@@ -111,7 +153,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
   protected dailyCheckbox: Signal<MatCheckbox | undefined> =
     viewChild('dailyCheckbox');
   get weekdaysSelection() {
-    return this.createTodoForm.get('weekdaysForm');
+    return this.editTodoForm.get('weekdaysForm');
   }
   private previousWeekdaysSelection: WritableSignal<any> = signal(undefined);
   protected confirmSchedule = signal(false);
@@ -150,7 +192,6 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
     }
     checkbox.change.subscribe((e) => {
       console.log('CHECKBOXCHANGE', e);
-      console.log(this.createTodoForm.get('weekdaysForm')!.value);
 
       const checked = e.checked;
       const allSelectedState = this.allWeekdaysSelectedState;
@@ -164,18 +205,20 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
           sa: false,
           so: false,
         },
-        time: this.createTodoForm.get('weekdaysForm')!.value.time ?? null,
+
+        //@ts-ignore
+        time: this.editTodoForm.get('weekdaysForm')!.value.time ?? null,
       };
       if (checked) {
         if (this.weekdaysSelection!.get('time')!.disabled) {
           this.weekdaysSelection!.get('time')!.enable();
         }
-        const currentSelectedDays = this.createTodoForm
+        const currentSelectedDays = this.editTodoForm
           .get('weekdaysForm')!
           .getRawValue();
 
         this.previousWeekdaysSelection.set(currentSelectedDays);
-        this.createTodoForm
+        this.editTodoForm
           .get('weekdaysForm')!
           .setValue(this.allWeekdaysSelectedState);
       } else if (this.previousWeekdaysSelection()) {
@@ -183,7 +226,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
           .get('weekdaysForm')!
           .setValue(this.previousWeekdaysSelection());
       } else {
-        this.createTodoForm.get('weekdaysForm')!.setValue(noneSelectedState);
+        this.editTodoForm.get('weekdaysForm')!.setValue(noneSelectedState);
       }
     });
     if (!this.dailyCheckbox()) {
@@ -199,7 +242,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
     );
   });
   todoRepeatable: Signal<any> = toSignal(
-    this.createTodoForm.valueChanges.pipe(
+    this.editTodoForm.valueChanges.pipe(
       takeUntilDestroyed(),
       map((v) => v.repeatable),
       distinctUntilChanged()
@@ -208,17 +251,22 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
   todoRepeatableObs = toObservable(this.todoRepeatable);
   handleOptionalRepeatable = effect(() => {
     if (this.todoRepeatable()) {
-      this.addWeekdaysForm(this.createTodoForm);
+      // this.addWeekdaysForm(this.editTodoForm);
     } else {
-      if (this.createTodoForm.get('weekdaysForm')) {
-        this.createTodoForm.removeControl('weekdaysForm');
-        this.createTodoForm.removeControl('schedules');
+      if (this.editTodoForm.get('weekdaysForm')) {
+        //@ts-ignore
+        this.editTodoForm.removeControl('weekdaysForm');
+        //@ts-ignore
+        this.editTodoForm.removeControl('schedules');
       }
     }
   });
   ngOnInit(): void {
     console.log('DIALOG BEFOE');
     console.log('DIALOG DATA: ', this.dialogData);
+    this.editTodoForm.valueChanges.subscribe((v) =>
+      console.log('EDITFORM', v, this.editTodoForm, this.editTodoForm.valid)
+    );
     // this.dialogData;
     if (this.dialogData) {
       this.todoId.set(this.dialogData.todo);
@@ -227,13 +275,12 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
         this.dialogData.todo,
         this.todosStore.entityMap()[this.dialogData.todo]
       );
-      this.todosStore.entities()[this.dialogData.todoId];
     }
     this.dateAdapter.setLocale('de');
-    this.checkSavedCreateTodoFormState();
-    const c = new FormArray<any>([new FormControl()]);
-    c.setValue([new FormControl(2)]);
-    console.log('ARRAY', c);
+    // this.checkSavedCreateTodoFormState();
+    // const c = new FormArray<any>([new FormControl()]);
+    // c.setValue([new FormControl(2)]);
+    // console.log('ARRAY', c);
   }
   ngAfterViewInit(): void {
     console.log('CONTROLS', this.editTodoForm.controls);
@@ -242,6 +289,14 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
     }
   }
   onSubmit() {
+    console.log('GOT VAL: ', this.editTodoForm.value);
+    // return;
+    this.todosService
+      .updateTodo({ ...this.editTodoForm.value, id: this.todoInEdit()!.id })
+      .subscribe((res) => {
+        console.log('TODO UPDATE RES: ', res);
+      });
+    return;
     console.log('VAL:', this.createTodoForm.value);
     // return;
     if (this.createTodoForm.valid) {
@@ -292,7 +347,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
   showScheduleTimePicker = signal(false);
 
   get schedules() {
-    return this.createTodoForm.get('schedules') as FormArray;
+    return this.editTodoForm.get('schedules') as FormArray;
   }
   get scheduleTimePicker() {
     return this.createTodoForm.get('weekdaysForm');
@@ -355,14 +410,14 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     if (this.saveCreateTodoFormState) {
-      localStorage.setItem(
-        'create_todo_form',
-        JSON.stringify(this.createTodoForm.getRawValue())
-      );
+      // localStorage.setItem(
+      //   'edit_todo_form',
+      //   JSON.stringify(this.createTodoForm.getRawValue())
+      // );
     }
   }
   checkSavedCreateTodoFormState() {
-    const savedStateRaw = localStorage.getItem('create_todo_form');
+    const savedStateRaw = localStorage.getItem('edit_todo_form');
     if (savedStateRaw) {
       const savedValue = JSON.parse(savedStateRaw);
       if (this.checkIsRepeatable(savedValue)) {
@@ -382,15 +437,15 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
       }, 100);
     }
   }
-  addWeekdaysForm(createTodoForm: typeof this.createTodoForm) {
-    this.createTodoForm.addControl(
+  addWeekdaysForm(createTodoForm: typeof this.editTodoForm) {
+    this.editTodoForm.addControl(
       'weekdaysForm',
       this.todosService.getWeekdaysGroup()
     );
-    this.createTodoForm
+    this.editTodoForm
       .get('weekdaysForm')!
       .addValidators(this.oneWeekdaySelected);
-    this.createTodoForm.addControl(
+    this.editTodoForm.addControl(
       'schedules',
       new FormArray([], [Validators.minLength(1), Validators.required])
     );
@@ -412,11 +467,44 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
   removeScheduleAt(formArrayIndex: number) {
     this.schedules.removeAt(formArrayIndex);
     this.schedules.updateValueAndValidity();
-    this.createTodoForm.updateValueAndValidity();
+    this.editTodoForm.updateValueAndValidity();
   }
   doEdit(controlName: keyof TTodoForm) {
+    console.log('NEW READONLY DATA SET');
     const current = this.controlsInEdit();
     current[controlName].inEdit = true;
-    this.controlsInEdit.set(current);
+    this.controlsInEdit.set({ ...current });
+  }
+  undo(controlName: keyof TTodoForm) {
+    const current = this.controlsInEdit();
+    current[controlName].inEdit = false;
+    this.editTodoForm
+      .get(controlName)
+      //@ts-ignore
+      ?.setValue(this.lastValue()![controlName]);
+    this.controlsInEdit.set({ ...current });
+  }
+  resetChanges() {
+    this.editTodoForm.setValue(this.lastValue()!);
+  }
+  confirm(controlName: keyof TTodoForm) {
+    const current = this.controlsInEdit();
+    current[controlName].inEdit = false;
+    this.controlsInEdit.set({ ...current });
+  }
+  deleteTodo(todoId: number) {
+    this.todosService
+      .deleteTodo(todoId)
+      .pipe(catchError((e) => of(e)))
+      .subscribe((v) => {
+        console.log('DELETE TODO RESULT: ', v);
+        if (!v.error) {
+          console.log('EMITTING DELETED EV');
+          this.todoDeleted.emit(todoId);
+          setTimeout(() => {
+            this.todosStore.removeTodo(todoId);
+          }, 500);
+        }
+      });
   }
 }
