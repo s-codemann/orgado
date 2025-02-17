@@ -11,12 +11,14 @@ import {
   EntityId,
   removeEntity,
   setEntities,
+  setEntity,
   updateEntity,
   withEntities,
 } from '@ngrx/signals/entities';
 import { TodosService } from './todos.service';
 import { computed, inject } from '@angular/core';
 import { ScheduleService } from '../../shared/cron/schedule.service';
+import { TodoDataService } from './services/todo-data.service';
 
 export type TTodo = {
   id: number;
@@ -53,7 +55,7 @@ export const TodosStore = signalStore(
   withState(initialState),
   withEntities<TTodo | TTodoWithSchedule>(),
   withMethods((store) => {
-    const todosService = inject(TodosService);
+    const todosService = inject(TodoDataService);
     const scheduleService = inject(ScheduleService);
     return {
       getTodos: () => {
@@ -61,13 +63,8 @@ export const TodosStore = signalStore(
         console.log('store: getting todos');
         todosService.getTodos(true).subscribe({
           next: (todos) => {
-            console.log('TUDINEXT');
-            console.log('tudi todos', todos);
-            // setEntities(todos);
-            // patchState(store, { todos });
             patchState(store, setEntities(todos));
             patchState(store, { loading: false });
-            setTimeout(() => console.log('tudi', store.todos()), 5000);
           },
           error: (err) => {
             console.log('TUDIERR');
@@ -105,6 +102,9 @@ export const TodosStore = signalStore(
       },
       removeTodo: (todoId: number) => {
         patchState(store, removeEntity(todoId));
+      },
+      updateTodo: (todo: TTodo | TTodoWithNextDue) => {
+        patchState(store, setEntity(todo));
       },
     };
   }),

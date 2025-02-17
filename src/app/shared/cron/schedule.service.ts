@@ -15,7 +15,6 @@ export class ScheduleService {
   }
   getNextDue(todo: any) {
     const schedules = todo.repeatableTodoSchedules;
-    console.log('COMPUTE NEXT DUE FOR ', todo, todo.repeatableTodoSchedules);
     const nextDue = todo.repeatableTodoSchedules
       .reduce((acc: any, curr: any) => {
         const schedule = this.parseCronSchedule(curr.cron_schedule);

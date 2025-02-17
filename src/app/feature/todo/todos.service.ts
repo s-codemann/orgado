@@ -13,6 +13,7 @@ import { TCreateTodoForm } from './model/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
 import { first } from 'rxjs';
+import { TodoStoreUpdaterService } from './services/todo-store-updater.service';
 
 @Injectable({
   providedIn: 'root',
@@ -131,8 +132,12 @@ export class TodosService {
     this.editTodoDialog.componentInstance?.todoDeleted.subscribe((v) => {
       this.todoDeleted(v);
     });
+    this.editTodoDialog.componentInstance?.close.subscribe(() => {
+      this.editTodoDialog?.close();
+    });
   }
   todosStore = inject(TodosStore);
+  updaterService = inject(TodoStoreUpdaterService);
   todoDeleted(todoId: number) {
     console.log('TODO DELETED');
     this.editTodoDialog

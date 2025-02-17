@@ -125,6 +125,7 @@
   <div class="cron-tabs-container">
     @for(tab of tabs();track tab){
     <button
+      type="button"
       class="cron-tab"
       [class.active]="tab === selectedCronTab()"
       (click)="selectedCronTab.set(tab)"

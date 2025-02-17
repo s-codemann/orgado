@@ -40,7 +40,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { OverlayComponent } from '../../../../core/layout/common/overlay/overlay/overlay.component';
 import { TimepickerComponent } from '../../../../core/layout/common/timepicker/timepicker.component';
 import { TodosService } from '../../todos.service';
-import { TodosStore, TTodo } from '../../todo.store';
+import { TodosStore, TTodo, TTodoWithNextDue } from '../../todo.store';
 import {
   toSignal,
   takeUntilDestroyed,
@@ -98,6 +98,7 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
     );
   });
   todoDeleted = output<number>();
+  close = output();
   controlsInEdit: WritableSignal<{
     [K in keyof TTodoForm]: { editable: boolean; inEdit: boolean };
   }> = signal({
@@ -295,6 +296,8 @@ export class EditTodoComponent implements OnInit, AfterViewInit {
       .updateTodo({ ...this.editTodoForm.value, id: this.todoInEdit()!.id })
       .subscribe((res) => {
         console.log('TODO UPDATE RES: ', res);
+        this.todosStore.updateTodo(res as TTodo | TTodoWithNextDue);
+        this.close.emit();
       });
     return;
     console.log('VAL:', this.createTodoForm.value);

@@ -18,6 +18,7 @@ import { computed, inject } from '@angular/core';
 import { TodosService } from './todos.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { interval } from 'rxjs';
+import { TodoDataService } from './services/todo-data.service';
 
 export const TodoOccurancesStore = signalStore(
   { providedIn: 'root' },
@@ -80,6 +81,12 @@ export const TodoOccurancesStore = signalStore(
     };
   }),
   withHooks((store) => ({
-    onInit: () => store.loadOccurances(),
+    onInit: () => {
+      store.loadOccurances();
+      //   const todoDate = inject(TodoDataService);
+      //   todoDate
+      //     .getTodoOccurances()
+      //     .subscribe((v) => console.log('TODO OCCURANCES ALL: ', v));
+    },
   }))
 );

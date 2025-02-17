@@ -57,32 +57,33 @@ export class TodoViewComponent implements OnInit {
   editTodoDialog!: MatDialogRef<EditTodoComponent | undefined>;
   ngOnInit(): void {}
   edit(todoId: number) {
-    console.log(todoId);
-    this.editTodoDialog = this.matDialog.open(EditTodoComponent, {
-      width: '85%',
-      height: '80%',
-      panelClass: 'mat-dialog-panel',
-      backdropClass: 'mat-dialog-backdrop',
-      closeOnNavigation: true,
-      data: {
-        todo: todoId,
-      },
-    });
-    this.editTodoDialog.componentInstance?.todoDeleted.subscribe((v) => {
-      this.todoDeleted(v);
-    });
+    // console.log(todoId);
+    // this.editTodoDialog = this.matDialog.open(EditTodoComponent, {
+    //   width: '85%',
+    //   height: '80%',
+    //   panelClass: 'mat-dialog-panel',
+    //   backdropClass: 'mat-dialog-backdrop',
+    //   closeOnNavigation: true,
+    //   data: {
+    //     todo: todoId,
+    //   },
+    // });
+    // this.editTodoDialog.componentInstance?.todoDeleted.subscribe((v) => {
+    //   this.todoDeleted(v);
+    // });
+    this.todoService.startEditDialog(todoId);
   }
-  todoDeleted(todoId: number) {
-    console.log('TODO DELETED');
-    this.editTodoDialog
-      ?.afterClosed()
-      .pipe(first())
-      .subscribe(() => {
-        setTimeout(() => {
-          this.todosStore.removeTodo(todoId);
-          alert('TODO GELÖSCHT');
-        }, 500);
-      });
-    this.editTodoDialog.close();
-  }
+  // todoDeleted(todoId: number) {
+  //   console.log('TODO DELETED');
+  //   this.editTodoDialog
+  //     ?.afterClosed()
+  //     .pipe(first())
+  //     .subscribe(() => {
+  //       setTimeout(() => {
+  //         this.todosStore.removeTodo(todoId);
+  //         alert('TODO GELÖSCHT');
+  //       }, 500);
+  //     });
+  //   this.editTodoDialog.close();
+  // }
 }
