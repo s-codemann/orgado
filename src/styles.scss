@@ -105,10 +105,13 @@ body {
 }
 
 .mat-dialog-backdrop {
-  background-color: rgba(175, 255, 96, 0.419);
   backdrop-filter: blur(0.2rem);
+}
 
-  // .mat-dialog-container {
-  //     background-color: red;
-  // }
+.center-content {
+  // --mat-dialog-container-max-width: unset;
+  // justify-content: center;
+}
+.cdk-overlay-pane.mat-mdc-dialog-panel {
+  --mat-dialog-container-max-width: 100vw;
 }

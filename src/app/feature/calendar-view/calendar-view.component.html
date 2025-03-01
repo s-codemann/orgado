@@ -1,4 +1,4 @@
-<div class="timeframe-selection">
+<!-- <div class="timeframe-selection">
   <mat-form-field>
     <mat-date-range-input [rangePicker]="rangePicker">
       <input matStartDate />
@@ -8,26 +8,27 @@
     <mat-date-range-picker #rangePicker></mat-date-range-picker>
     <button>OPEN PICKER</button>
   </mat-form-field>
-</div>
-<div class="day-selection">
+</div> -->
+<!-- <div class="day-selection">
   <h4>Tag auswählen</h4>
   <mat-form-field>
     <input matInput #f="ngModel" [(ngModel)]="f" [matDatepicker]="p" />
     <mat-datepicker #p name="hi"></mat-datepicker>
     <mat-datepicker-toggle [for]="p"></mat-datepicker-toggle>
   </mat-form-field>
-</div>
+</div> -->
 @switch (timeFrameType()) { @case("day"){
-<h5>
-  <button (click)="decrementDay()">
-    <mat-icon fontIcon="arrow_left"></mat-icon>
-  </button>
-  {{ selectedTimeframe() }}
-  <button (click)="incrementDay()">
-    <mat-icon fontIcon="arrow_right"></mat-icon>
-  </button>
-</h5>
+
 <div class="table-container">
+  <h5>
+    <button (click)="decrementDay()">
+      <mat-icon fontIcon="arrow_left"></mat-icon>
+    </button>
+    {{ selectedTimeframe() }}
+    <button (click)="incrementDay()">
+      <mat-icon fontIcon="arrow_right"></mat-icon>
+    </button>
+  </h5>
   <div class="settings-container">
     <mat-icon fontIcon="settings_applications"></mat-icon>
   </div>
@@ -36,27 +37,41 @@
       <tr>
         @for(timeFrameVal of timeFrameValues();track $index){
 
-        <th>{{ timeFrameVal.timeStr }}</th>
+        <th
+          [class.isFirst]="timeFrameVal.isFirst"
+          [ngClass]="{
+            isFirst: timeFrameVal.isFirst,
+            isLast: timeFrameVal.isLast
+          }"
+        >
+          @if(timeFrameVal.isFirst){
+          <div class="first-timeframe-indicator"></div>
+          } @if(timeFrameVal.isLast){
+          <div class="last-timeframe-indicator"></div>
+          }
+          {{ timeFrameVal.timeStr }}
+        </th>
 
         }
       </tr>
     </thead>
     <tbody>
       <tr>
-        @for(timeFrameVal of timeFrameValues();track $index){
+        @for(timeFrameVal of ntfs();track $index){
         <td>
           <div class="tasks-container">
-            @for(todo of timeFrameVal.repeatableTodos;track todo.id){
+            @for(oc of timeFrameVal.occurances; track $index){
+            <div class="todo">{{ oc.todo.title }}</div>
+            }
+            <!-- @for(todo of timeFrameVal.repeatableTodos;track todo.id){
             <div (click)="viewTodo(todo.id)" class="todo repeatable">
               {{ todo.title }}
             </div>
             } @for(todo of timeFrameVal.oneOffTodos;track todo.id){
-            <!-- <td style=""> -->
             <div class="todo one-off">
               <div class="title">{{ todo.title }}</div>
             </div>
-            <!-- </td> -->
-            }
+            } -->
           </div>
         </td>
         }

@@ -1,10 +1,9 @@
 <!-- <app-home-screen></app-home-screen> -->
 <div [@routeAnimations]="getRouteAnimationData()">
-  <a class="go-home" routerLink="/">
-    <button color="primary" mat-mini-fab>
-      <mat-icon fontIcon="home"></mat-icon>
-    </button>
-  </a>
   <router-outlet></router-outlet>
 </div>
 <router-outlet name="overlay"></router-outlet>
+
+<div class="navbar-container">
+ <app-navbar></app-navbar>
+</div>

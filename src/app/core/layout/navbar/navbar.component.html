@@ -1,0 +1,17 @@
+<nav class="navbar" [class.expanded]="expanded()">
+    @for(navItem of navItems(); track navItem.title){
+        <a (click)="navigate($event,navItem.link)">
+        <div class="nav-item">{{navItem.title}}</div>
+
+</a>
+        <div class="child-items">
+            @for(child of navItem.children;track child.title){
+        <a (click)="navigate($event,navItem.link+'/'+child.link,child.queryparams)">
+        <div class="nav-item">{{child.title}}</div>
+        </a>
+            }
+        </div>
+
+    }
+</nav>
+<div class="navbar-toggle" (click)="toggleExpanded()"></div>

@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  padding: 2rem;
+}
+.overview-container {
+  min-height: 50vh;
+  display: block;
+  padding: 2rem;
+  //   box-shadow: 2px 2px 4px 2px #ffff00;
+  border: 1px solid white;
+  border-radius: 1rem;
+  // width: clamp(300px, 66vw, 1000px);
+}
+.todo {
+  // font-size: larger;
+  font-size: 1.4rem1;
+  font-weight: bolder;
+  text-decoration: underline;
+}
+.info-action-container {
+  color: #fff;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 1.5rem 0;
+  border: 1px dashed slateblue;
+  border-radius: 0.5rem;
+}
+.time-container {
+  padding-left: 2rem;
+  padding-top: 2rem;
+}
+.time {
+  color: whitesmoke;
+}
+.time-label {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+.remarks-container {
+  padding-left: 2rem;
+  padding-top: 2rem;
+  .label {
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+}

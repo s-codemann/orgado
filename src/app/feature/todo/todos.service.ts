@@ -120,7 +120,7 @@ export class TodosService {
   startEditDialog(todoId: number) {
     console.log(todoId);
     this.editTodoDialog = this.matDialog.open(EditTodoComponent, {
-      width: '85%',
+      width: '800px',
       height: '80%',
       panelClass: 'mat-dialog-panel',
       backdropClass: 'mat-dialog-backdrop',

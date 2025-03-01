@@ -44,6 +44,11 @@ export const routes: Routes = [
     canDeactivate: [isAuthenticatedGuard],
     component: LoginComponent,
   },
+  {
+    path: 'tasks',
+    canActivate: [isAuthenticatedGuard],
+    component: HomeScreenComponent,
+  },
   //   {
   // path: '',
   // component: OverlayComponent,

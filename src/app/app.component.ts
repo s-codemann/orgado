@@ -25,6 +25,7 @@ import { NotificationService } from './core/notification/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { NavbarComponent } from './core/layout/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
     RouterLink,
     RouterLinkActive,
+    NavbarComponent,
     // RouterOutlet,
   ],
   providers: [provideNativeDateAdapter()],

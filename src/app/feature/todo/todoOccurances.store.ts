@@ -7,8 +7,10 @@ import {
   withState,
 } from '@ngrx/signals';
 import {
+  addEntities,
   addEntity,
   EntityId,
+  setAllEntities,
   setEntities,
   updateEntity,
   withEntities,
@@ -19,10 +21,12 @@ import { TodosService } from './todos.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { interval } from 'rxjs';
 import { TodoDataService } from './services/todo-data.service';
+import { TTodoOccuranceFilters } from './model/todoOccurace';
+import { TodoOccuranceDataService } from './services/todo-occurance-data.service';
 
 export const TodoOccurancesStore = signalStore(
   { providedIn: 'root' },
-  withState({}),
+  withState({calendarOccurances: new Array<TTodoOccurance>()}),
   withEntities<TTodoOccurance>(),
   withComputed((store) => {
     const refreshIntv = toSignal(interval(30000));
@@ -47,6 +51,7 @@ export const TodoOccurancesStore = signalStore(
   }),
   withMethods((store) => {
     const todosService = inject(TodosService);
+    const dataSerice = inject(TodoOccuranceDataService);
     return {
       addTodoOccurance: (todoOccurance: TTodoOccurance) => {
         patchState(store, addEntity(todoOccurance));
@@ -71,6 +76,11 @@ export const TodoOccurancesStore = signalStore(
             }),
           })
         );
+      },
+      getOccurances: (filters: TTodoOccuranceFilters) => {
+        dataSerice.getOccurancesInTimeframe(filters).subscribe((v) => {
+          patchState(store, {calendarOccurances:v});
+        });
       },
       loadOccurances: () => {
         todosService.getTodoOccurances().subscribe((occurances) => {

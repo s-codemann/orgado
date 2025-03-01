@@ -27,7 +27,7 @@
   </app-overlay>
 </div>
 } @else{
-<div class="todo-selection-container">
+<!-- <div class="todo-selection-container">
   <select
     class="category-select"
     name=""
@@ -41,26 +41,9 @@
     <option value="one-off">Einmalige Aufgaben</option>
     <option value="completed">Erledigt</option>
   </select>
-  <app-todo-view [displayKind]="viewCategory"></app-todo-view>
+</div> -->
+<div class="todo-view-container">
+  <app-todo-view [displayKind]="showTodoCategory()"></app-todo-view>
 </div>
-<div class="main-container todos">
-  <!-- <div class="one-off-todos-container">
-    <h2>Einmalige Aufgaben</h2>
-    @for (todo of todosStore.oneOffTodos() ; track todo.id;) {
-    <app-one-off-todo-card [todo]="todo"></app-one-off-todo-card>
 
-    }
-  </div>
-  <div class="repeatable-todos-container">
-    <h2>Wiederholende Aufgaben</h2>
-    @for (todo of todosStore.repeatableTodos() ; track todo.id) {
-    <app-repeatable-todo-card [todo]="todo"></app-repeatable-todo-card>
-    }
-  </div> -->
-</div>
 }
-
-<!-- <button mat-mini-fab>
-  <a routerLink="/home"></a>
-  <mat-icon fontIcon="home"></mat-icon>
-</button> -->

@@ -12,7 +12,7 @@ import { CardComponent } from '../../../core/layout/card/card.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CreateTodoComponent } from '../../todo/components/create-todo/create-todo.component';
 import { OverlayComponent } from '../../../core/layout/common/overlay/overlay/overlay.component';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map, tap } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
@@ -71,9 +71,10 @@ export class HomeScreenComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.todoCategorySelect()) {
       console.log('GOT CATEGORY MODEL: ', this.todoCategorySelect);
       this.readSelectedCategory();
-      this.todoCategorySelect()?.valueChanges?.subscribe((v) =>
-        this.saveSelectedCategory(v)
-      );
+      this.todoCategorySelect()?.valueChanges?.subscribe((v) => {
+        this.router.navigate([], { queryParams: { show: v } });
+        this.saveSelectedCategory(v);
+      });
     }
   });
 
@@ -102,7 +103,7 @@ export class HomeScreenComponent implements OnInit, AfterViewInit, OnDestroy {
       window.location.href
     );
     this.createTodoDialog = this.matDialog.open(CreateTodoComponent, {
-      width: '95%',
+      width: '50%',
       height: '80%',
       panelClass: 'mat-dialog-panel',
       backdropClass: 'mat-dialog-backdrop',
@@ -125,8 +126,18 @@ export class HomeScreenComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('STORE TODOS Entity: ', this.todosStore.entityMap());
     console.log('STORE TODOS Entities: ', this.todosStore.entities());
   });
+  ar = inject(ActivatedRoute);
+  showTodoCategory = signal('due-tasks');
   ngOnInit(): void {
     this.todosStore.getTodos();
+    this.ar.queryParamMap.subscribe((v) => {
+      if (v.has('show')) {
+        this.showTodoCategory.set(v.get('show')!);
+      }
+    });
+    //     this.ar.paramMap.subscribe((m)=>console.log("PARAMMAP: ",m.keys))
+    // this.ar.queryParamMap.subscribe((v)=>console.log("QPARAMS: ",v,v.keys,v.getAll("show")))
+    console.log('queryparams:', this.ar.queryParams);
   }
   ngAfterViewInit(): void {}
   ngOnDestroy(): void {}
@@ -150,7 +161,10 @@ export class HomeScreenComponent implements OnInit, AfterViewInit, OnDestroy {
       // this.viewCategory = viewCategorySaved;
     }
   }
+  router = inject(Router);
   saveSelectedCategory(category: string) {
     localStorage.setItem('todo_view_category', category);
+    // this.router.navigate([],{queryParams:{id:"FISCH"}})
+    // this.router.serializeUrl()
   }
 }

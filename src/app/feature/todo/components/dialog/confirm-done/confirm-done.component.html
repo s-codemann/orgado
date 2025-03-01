@@ -1,0 +1,27 @@
+<div class="overview-container">
+  @if(todo(); as oc ){
+  <div class="info-action-container">
+    <span>Todo: </span>
+    <!-- <span class="todo">{{ todo.todo.title }}</span -->
+    <!-- @if(oc.todo.repeatable){
+    <app-repeatable-todo-card [todo]="oc.todo"></app-repeatable-todo-card>
+    } @else{
+    <app-one-off-todo-card [todo]="oc.todo"></app-one-off-todo-card>
+    } -->
+    <!-- <app-todo-occurance-card [todoOccurance]="oc"></app-todo-occurance-card> -->
+    <select name="" id="">
+      <option value="complete">erledigt</option>
+      <option value="pause">pausieren</option>
+    </select>
+  </div>
+  <div class="time-container">
+    <span class="time"
+      ><span class="time-label">Uhrzeit:</span>
+      {{ completedTime() | date : "dd.MM.yyyy, HH:mm" }} Uhr</span
+    >
+  </div>
+  <div class="remarks-container">
+    <span class="label">Bemerkungen?</span>
+  </div>
+  }
+</div>

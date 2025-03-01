@@ -1,5 +1,4 @@
 h1 {
-  color: #fff;
   font-size: 2rem;
 }
 
@@ -7,6 +6,8 @@ header {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding-left: 2.5rem;
+  color: #dbceff;
 }
 
 :host {
@@ -154,7 +155,8 @@ header {
   height: 100vh;
 
   .category-select {
-    font-size: 1.3rem;
+    font-size: 1.9rem;
+    outline: none;
     padding: 0.5rem 1rem;
     background-color: transparent;
     border: 2px dashed var(--primary-900);
@@ -166,6 +168,21 @@ header {
 
     option {
       color: #000;
+      transition: background-color 450ms;
+      background-color: #1a1a1a;
+      color: #fff;
+      &:hover {
+        background-color: #ffffff93;
+        color: #000;
+      }
     }
+  }
+}
+.todo-view-container {
+  overflow: hidden auto;
+  margin-top: 2.5rem;
+  flex-grow: 1;
+
+  app-todo-view {
   }
 }
